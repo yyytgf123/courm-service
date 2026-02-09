@@ -1,0 +1,37 @@
+image:
+  tag: "18-6675529e"
+
+service:
+  type: ClusterIP
+
+service2:
+  type: ClusterIP
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: prod
+
+replicaCount: 1
+
+rollout:
+  analysis:
+    enabled: true
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+## Gateway API - Production
+route:
+  enabled: true
+  gatewayName: prod-gw
+  gatewayNamespace: istio-system
+  path: /api/v2/payment
+  pathType: PathPrefix
+  weight: 1
+  hostnames:
+    - "payment.example.com"

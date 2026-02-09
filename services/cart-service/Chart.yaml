@@ -1,0 +1,5 @@
+apiVersion: v2
+name: cart-service
+description: Cart Service Chart
+type: application
+version: 1.0.0

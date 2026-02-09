@@ -1,0 +1,5 @@
+apiVersion: v2
+name: courm-app
+description: Courm Application Chart for microservices
+type: application
+version: 1.0.0

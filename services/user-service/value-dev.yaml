@@ -1,0 +1,30 @@
+image:
+  tag: dev-latest
+
+service:
+  type: ClusterIP
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: dev
+
+replicas: 1
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+## Gateway API - Development
+route:
+  enabled: true
+  gatewayName: dev-gw
+  gatewayNamespace: istio-system
+  path: /api/v2/user
+  pathType: PathPrefix
+  weight: 1
+  hostnames:
+    - "user-dev.example.com"

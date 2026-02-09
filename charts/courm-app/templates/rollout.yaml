@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "courm-app.fullname" . }}
+  labels:
+    {{- include "courm-app.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  # replicaCount가 없으면 (기존 values에서 쓰던) replicas를 fallback으로 사용
+  replicas: {{ default (default 1 .Values.replicas) .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
+  selector:
+    matchLabels:
+      {{- include "courm-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "courm-app.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ default "latest" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          {{- if .Values.env }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          {{- end }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  strategy:
+    blueGreen:
+      activeService: {{ include "courm-app.fullname" . }}-active
+      previewService: {{ include "courm-app.fullname" . }}-preview
+      autoPromotionEnabled: true
+      scaleDownDelaySeconds: 300
+
+      {{- /* Blue/Green에서 Analysis는 prePromotionAnalysis / postPromotionAnalysis로 넣어야 CRD validation에 걸리지 않습니다. */}}
+      {{- if (and .Values.rollout .Values.rollout.analysis .Values.rollout.analysis.enabled) }}
+      prePromotionAnalysis:
+        templates:
+          - templateName: http-success-rate
+      {{- end }}

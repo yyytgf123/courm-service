@@ -1,0 +1,35 @@
+{{- if (and .Values.route .Values.route.enabled) }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "courm-app.fullname" . }}
+  labels:
+    {{- include "courm-app.labels" . | nindent 4 }}
+  annotations:
+    # service(0) -> rollout(1) 적용 후 route가 붙도록
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  parentRefs:
+    - name: {{ required "route.gatewayName is required" .Values.route.gatewayName }}
+      namespace: {{ default "istio-system" .Values.route.gatewayNamespace }}
+      {{- with .Values.route.sectionName }}
+      sectionName: {{ . | quote }}
+      {{- end }}
+
+  {{- with .Values.route.hostnames }}
+  hostnames:
+    {{- range . }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+
+  rules:
+    - matches:
+        - path:
+            type: {{ default "PathPrefix" .Values.route.pathType }}
+            value: {{ required "route.path is required" .Values.route.path | quote }}
+      backendRefs:
+        - name: {{ include "courm-app.fullname" . }}-active
+          port: {{ default 80 .Values.service.port }}
+          weight: {{ default 1 .Values.route.weight }}
+{{- end }}

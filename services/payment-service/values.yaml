@@ -1,0 +1,55 @@
+## env
+env:
+  - name: DB_HOST
+    value: "postgresql"
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_NAME
+    value: "ecommerce"
+  - name: SPRING_DATASOURCE_USERNAME
+    value: "postgres"
+  - name: SPRING_DATASOURCE_PASSWORD
+    value: "postgres"
+
+## secret
+imagePullSecrets:
+  - name: ecr-secret
+
+## gateway api
+route:
+  enabled: true
+  gatewayName: prod-gw
+  gatewayNamespace: istio-system
+  path: /api/v2/payment
+  pathType: PathPrefix
+  weight: 1
+  hostnames: []
+
+service:
+  port: 80
+  targetPort: 8080
+  type: ClusterIP
+
+image:
+  repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-payment
+  tag: 18-6675529e
+
+replicas: 2
+
+## Argo Rollouts Strategy
+strategy:
+  type: blueGreen
+  blueGreen:
+    autoPromotionEnabled: true
+    scaleDownDelaySeconds: 300
+
+## Resource limits
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+revisionHistoryLimit: 3
