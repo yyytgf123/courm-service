@@ -34,7 +34,7 @@ image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-user
   tag: 18-6675529e
 
-replicas: 2
+replicas: 1
 
 ## Argo Rollouts Strategy
 strategy:
