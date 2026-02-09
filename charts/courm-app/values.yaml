@@ -1,0 +1,11 @@
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+    portName: http
+    path: /actuator/prometheus
+    interval: 15s
+    scrapeTimeout: 10s
+    scheme: http
+    additionalLabels:
+      release: kube-prometheus-stack

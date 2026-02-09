@@ -1,0 +1,23 @@
+{{- if and (.Values.metrics.enabled) (.Values.metrics.serviceMonitor.enabled) (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "courm-app.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "courm-app.labels" . | nindent 4 }}
+    {{- with .Values.metrics.serviceMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "courm-app.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+    - port: {{ .Values.metrics.serviceMonitor.portName | default "http" | quote }}
+      path: {{ .Values.metrics.serviceMonitor.path | default "/actuator/prometheus" | quote }}
+      interval: {{ .Values.metrics.serviceMonitor.interval | default "15s" | quote }}
+      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout | default "10s" | quote }}
+      scheme: {{ .Values.metrics.serviceMonitor.scheme | default "http" | quote }}
+{{- end }}

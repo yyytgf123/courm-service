@@ -54,3 +54,11 @@ resources:
     cpu: "500m"
 
 revisionHistoryLimit: 3
+
+## Monitoring
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: kube-prometheus-stack
