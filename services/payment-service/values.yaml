@@ -32,7 +32,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-payment
-  tag: 18-6675529e
+  tag: "94-e206728a"
 
 replicas: 1
 
