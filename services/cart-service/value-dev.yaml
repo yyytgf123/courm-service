@@ -1,5 +1,5 @@
-image:
-  tag: dev-latest
+#image:
+#  tag: dev-latest
 
 service:
   type: ClusterIP
