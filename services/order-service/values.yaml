@@ -32,7 +32,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-order
-  tag: 18-6675529e
+  tag: "84-4d9eee1a"
 
 replicas: 1
 
