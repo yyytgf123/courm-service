@@ -7,12 +7,12 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  # replicaCount가 없으면 (기존 values에서 쓰던) replicas를 fallback으로 사용
   replicas: {{ default (default 1 .Values.replicas) .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
   selector:
     matchLabels:
       {{- include "courm-app.selectorLabels" . | nindent 6 }}
+
   template:
     metadata:
       labels:
@@ -22,44 +22,85 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default "latest" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
-          {{- if .Values.env }}
+
+          {{- /* ===== env: (otel enabled OR 기존 env 존재) 일 때만 생성 ===== */}}
+          {{- $otelEnabled := and .Values.otel .Values.otel.enabled }}
+          {{- if or $otelEnabled .Values.env }}
           env:
-            {{- toYaml .Values.env | nindent 12 }}
+            {{- /* ===== OTEL env (enabled일 때만) ===== */}}
+            {{- if $otelEnabled }}
+            - name: OTEL_SERVICE_NAME
+              value: {{ default (include "courm-app.fullname" .) .Values.otel.serviceName | quote }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.otel.otlpEndpoint | quote }}
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: {{ .Values.otel.otlpProtocol | default "http/protobuf" | quote }}
+            - name: OTEL_TRACES_EXPORTER
+              value: {{ .Values.otel.tracesExporter | default "otlp" | quote }}
+            - name: OTEL_METRICS_EXPORTER
+              value: {{ .Values.otel.metricsExporter | default "none" | quote }}
+            - name: OTEL_LOGS_EXPORTER
+              value: {{ .Values.otel.logsExporter | default "none" | quote }}
+
+            {{- if .Values.otel.resourceAttributes }}
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: {{ .Values.otel.resourceAttributes | quote }}
+            {{- end }}
+            {{- if .Values.otel.sampler }}
+            - name: OTEL_TRACES_SAMPLER
+              value: {{ .Values.otel.sampler | quote }}
+            {{- end }}
+            {{- if .Values.otel.samplerArg }}
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: {{ .Values.otel.samplerArg | quote }}
+            {{- end }}
+
+            {{- /* ===== Java Agent 주입 (Dockerfile에 jar 포함했으니 env만 주면 됨) ===== */}}
+            {{- $agentJar := default "/otel/opentelemetry-javaagent.jar" (dig "otel" "javaAgent" "jarPath" .Values) }}
+            {{- $baseOpts := default "" .Values.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ trim (printf "%s -javaagent:%s" $baseOpts $agentJar) | quote }}
+            {{- end }}
+
+            {{- /* ===== 기존 사용자 env 유지 ===== */}}
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
+
           {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
   strategy:
     blueGreen:
       activeService: {{ include "courm-app.fullname" . }}-active
       previewService: {{ include "courm-app.fullname" . }}-preview
       autoPromotionEnabled: true
       scaleDownDelaySeconds: 300
-
-{{/*      {{- /* Blue/Green에서 Analysis는 prePromotionAnalysis / postPromotionAnalysis로 넣어야 CRD validation에 걸리지 않습니다. */}}
-{{/*      {{- if (and .Values.rollout .Values.rollout.analysis .Values.rollout.analysis.enabled) }}*/}}
-{{/*      prePromotionAnalysis:*/}}
-{{/*        templates:*/}}
-{{/*          - templateName: http-success-rate*/}}
-{{/*      {{- end }}*/}}

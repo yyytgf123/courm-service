@@ -61,3 +61,17 @@ metrics:
     enabled: true
     additionalLabels:
       release: kube-prometheus-stack
+
+# Tempo
+otel:
+  enabled: false
+  serviceName: order-service
+  otlpEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4318"
+  otlpProtocol: "http/protobuf"
+  tracesExporter: "otlp"
+  metricsExporter: "none"
+  logsExporter: "none"
+  javaAgent:
+    jarPath: "/otel/opentelemetry-javaagent.jar"
+
+javaToolOptions: ""   # 필요하면 "-Xms256m -Xmx512m" 같은거 여기에

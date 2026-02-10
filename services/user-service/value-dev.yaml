@@ -28,3 +28,10 @@ route:
   weight: 1
   hostnames:
     - "user-dev.example.com"
+
+# Tempo
+otel:
+  enabled: true
+  resourceAttributes: "deployment.environment=dev,service.version=1.0.0"
+  sampler: "parentbased_traceidratio"
+  samplerArg: "1.0"   # 처음엔 100%로 켜서 잘 들어오는지 확인
