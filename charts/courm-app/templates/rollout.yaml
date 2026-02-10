@@ -57,9 +57,9 @@ spec:
       autoPromotionEnabled: true
       scaleDownDelaySeconds: 300
 
-      {{- /* Blue/Green에서 Analysis는 prePromotionAnalysis / postPromotionAnalysis로 넣어야 CRD validation에 걸리지 않습니다. */}}
-      {{- if (and .Values.rollout .Values.rollout.analysis .Values.rollout.analysis.enabled) }}
-      prePromotionAnalysis:
-        templates:
-          - templateName: http-success-rate
-      {{- end }}
+{{/*      {{- /* Blue/Green에서 Analysis는 prePromotionAnalysis / postPromotionAnalysis로 넣어야 CRD validation에 걸리지 않습니다. */}}
+{{/*      {{- if (and .Values.rollout .Values.rollout.analysis .Values.rollout.analysis.enabled) }}*/}}
+{{/*      prePromotionAnalysis:*/}}
+{{/*        templates:*/}}
+{{/*          - templateName: http-success-rate*/}}
+{{/*      {{- end }}*/}}
