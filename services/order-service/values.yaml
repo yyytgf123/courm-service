@@ -36,6 +36,11 @@ image:
 
 replicas: 1
 
+## Cognito
+env:
+  - name: AWS_COGNITO_REGION
+    value: "ap-northeast-2"
+
 ## Argo Rollouts Strategy
 strategy:
   type: blueGreen
