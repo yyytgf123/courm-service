@@ -30,6 +30,6 @@ spec:
             value: {{ required "route.path is required" .Values.route.path | quote }}
       backendRefs:
         - name: {{ include "courm-app.fullname" . }}-active
-          port: {{ default 80 .Values.service.port }}
+          port: {{ default 8080 .Values.service.port }}
           weight: {{ default 1 .Values.route.weight }}
 {{- end }}
