@@ -1,24 +1,42 @@
-#image:
-#  tag: dev-latest
-
-service:
-  type: ClusterIP
-
-env:
-  - name: SPRING_PROFILES_ACTIVE
-    value: dev
+profile: dev
 
 replicas: 1
+revisionHistoryLimit: 2
 
-resources:
-  requests:
-    memory: "256Mi"
-    cpu: "250m"
-  limits:
-    memory: "512Mi"
-    cpu: "500m"
+# ------------------------
+# Image
+# ------------------------
+image:
+  tag: dev-latest
 
-## Gateway API - Development
+# ------------------------
+# Service
+# ------------------------
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+
+# ------------------------
+# Redis (Dev)
+# ------------------------
+
+
+# ------------------------
+# Kafka (Dev)
+# ------------------------
+
+
+# ------------------------
+# Dev Secrets
+# ------------------------
+secrets:
+  jwtSecret: dev-secret-key
+
+# ------------------------
+# Gateway API - Development
+# ------------------------
 route:
   enabled: true
   gatewayName: dev-gw
@@ -29,9 +47,16 @@ route:
   hostnames:
     - "cart-dev.example.com"
 
-# Tempo
-otel:
-  enabled: true
-  resourceAttributes: "deployment.environment=dev,service.version=1.0.0"
-  sampler: "parentbased_traceidratio"
-  samplerArg: "1.0"   # 처음엔 100%로 켜서 잘 들어오는지 확인
+# ------------------------
+# Resources
+# ------------------------
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# ------------------------
+# OpenTelemetry (De
