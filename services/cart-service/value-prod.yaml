@@ -30,7 +30,7 @@ route:
   enabled: true
   gatewayName: prod-gw
   gatewayNamespace: istio-system
-  path: /api/v2/cart
+  path: /
   pathType: PathPrefix
   weight: 1
   hostnames:
