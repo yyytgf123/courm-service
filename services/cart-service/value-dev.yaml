@@ -7,7 +7,7 @@ revisionHistoryLimit: 2
 # Image
 # ------------------------
 image:
-  tag: dev-latest
+  tag: latest
 
 # ------------------------
 # Service
