@@ -1,21 +1,57 @@
-## env
-env:
-  - name: DB_HOST
-    value: "postgresql"
-  - name: DB_PORT
-    value: "5432"
-  - name: DB_NAME
-    value: "ecommerce"
-  - name: SPRING_DATASOURCE_USERNAME
-    value: "postgres"
-  - name: SPRING_DATASOURCE_PASSWORD
-    value: "postgres"
+profile: dev
 
-## secret
+replicas: 2
+revisionHistoryLimit: 3
+
+# ------------------------
+# Image
+# ------------------------
+image:
+  repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
 imagePullSecrets:
   - name: ecr-secret
 
-## gateway api
+# ------------------------
+# Service
+# ------------------------
+service:
+  port: 80
+  targetPort: 8080
+  type: ClusterIP
+
+
+# ------------------------
+# Redis
+# ------------------------
+redis:
+  host: redis.commerce.svc.cluster.local
+  port: 6379
+
+# ------------------------
+# Kafka
+# ------------------------
+kafka:
+  bootstrapServers: kafka.kafka.svc.cluster.local:9092
+
+# ------------------------
+# JWT
+# ------------------------
+jwt:
+  # secret은 Secret에서 주입
+  expiration: 3600000
+
+# ------------------------
+# Cognito
+# ------------------------
+cognito:
+  region: ap-northeast-2
+
+# ------------------------
+# Gateway API
+# ------------------------
 route:
   enabled: true
   gatewayName: prod-gw
@@ -25,31 +61,18 @@ route:
   weight: 1
   hostnames: []
 
-service:
-  port: 80
-  targetPort: 8080
-  type: ClusterIP
-
-image:
-  repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
-  tag: "47a57db"
-  pullPolicy: IfNotPresent
-
-replicas: 1
-
-## Cognito
-env:
-  - name: AWS_COGNITO_REGION
-    value: "ap-northeast-2"
-
-## Argo Rollouts Strategy
+# ------------------------
+# Argo Rollouts
+# ------------------------
 strategy:
   type: blueGreen
   blueGreen:
     autoPromotionEnabled: true
     scaleDownDelaySeconds: 300
 
-## Resource limits
+# ------------------------
+# Resources
+# ------------------------
 resources:
   requests:
     memory: "256Mi"
@@ -58,9 +81,9 @@ resources:
     memory: "512Mi"
     cpu: "500m"
 
-revisionHistoryLimit: 3
-
-## prometheus
+# ------------------------
+# Prometheus
+# ------------------------
 metrics:
   enabled: true
   serviceMonitor:
@@ -68,7 +91,9 @@ metrics:
     additionalLabels:
       release: kube-prometheus-stack
 
-# Tempo
+# ------------------------
+# OpenTelemetry (Tempo)
+# ------------------------
 otel:
   enabled: false
   serviceName: cart-service
@@ -80,4 +105,5 @@ otel:
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
-javaToolOptions: ""   # 필요하면 "-Xms256m -Xmx512m" 같은거 여기에
+javaToolOptions: ""
+logLevel: INFO
