@@ -35,6 +35,8 @@ redis:
 # ------------------------
 kafka:
   bootstrapServers: kafka.kafka.svc.cluster.local:9092
+  consumerGroupId: cart-service-group
+  orderTopic: order-events
 
 # ------------------------
 # JWT
