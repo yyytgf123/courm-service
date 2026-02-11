@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/services/cart-service/templates/configmap.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/cart-service/templates/secret.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/cart-service/templates/rollout.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/templates/rollout.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/cart-service/value-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/value-dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/cart-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/values.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,11 +50,9 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/boxty/courm-service&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/lhh/Desktop/project/infra/k8s/courm-service&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -70,7 +61,6 @@
     &quot;project.structure.last.edited&quot;: &quot;모듈&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.23563218&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -127,9 +117,7 @@
       <workItem from="1770559241884" duration="656000" />
       <workItem from="1770560063345" duration="6432000" />
       <workItem from="1770600086741" duration="9042000" />
-      <workItem from="1770730434383" duration="209000" />
-      <workItem from="1770731770375" duration="276000" />
-      <workItem from="1770791323219" duration="2894000" />
+      <workItem from="1770687128594" duration="17607000" />
     </task>
     <servers />
   </component>
