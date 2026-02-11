@@ -15,7 +15,7 @@ env:
   - name: SPRING_KAFKA_CONSUMER_GROUP_ID
     value: "user-service-group"
   - name: KAFKA_USER_TOPIC
-    value: "user-lifecycle"
+    value: "user-events"
 
 
 ## secret

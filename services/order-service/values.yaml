@@ -16,6 +16,10 @@ env:
     value: "order-service-group"
   - name: KAFKA_ORDER_TOPIC
     value: "order-events"
+  - name: KAFKA_PAYMENT_TOPIC
+    value: "payment-events"
+  - name: KAFKA_PRODUCT_TOPIC
+    value: "product-events"
 
 ## secret
 imagePullSecrets:
