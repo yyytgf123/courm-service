@@ -6,49 +6,87 @@ metadata:
     {{- include "cart-service.labels" . | nindent 4 }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+
 spec:
   replicas: {{ .Values.replicas | default 2 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
+
   selector:
     matchLabels:
       {{- include "cart-service.selectorLabels" . | nindent 6 }}
+
   template:
     metadata:
       labels:
         {{- include "cart-service.selectorLabels" . | nindent 8 }}
+
     spec:
+      terminationGracePeriodSeconds: 30
+
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
+
+          # 🔥 ConfigMap + Secret 주입
+          envFrom:
+            - configMapRef:
+                name: {{ include "cart-service.fullname" . }}-config
+            - secretRef:
+            name: {{ include "cart-service.fullname" . }}-secret
+
           {{- if .Values.env }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
           {{- end }}
+
+          # 🔥 Health Check (Spring Boot Actuator 기준)
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            failureThreshold: 3
+
           {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
   {{- if .Values.strategy }}
   {{- if eq .Values.strategy.type "blueGreen" }}
   strategy:

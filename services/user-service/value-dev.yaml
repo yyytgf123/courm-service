@@ -23,7 +23,7 @@ route:
   enabled: true
   gatewayName: dev-gw
   gatewayNamespace: istio-system
-  path: /api/v2/user
+  path: /
   pathType: PathPrefix
   weight: 1
   hostnames:
