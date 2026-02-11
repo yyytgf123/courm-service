@@ -10,6 +10,16 @@ env:
     value: "postgres"
   - name: SPRING_DATASOURCE_PASSWORD
     value: "postgres"
+  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+    value: "courm-kafka.courm-kafka.svc.cluster.local:9092"
+  - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+    value: "product-service-group"
+  - name: KAFKA_ORDER_TOPIC
+    value: "order-events"
+  - name: KAFKA_PAYMENT_TOPIC
+    value: "payment-events"
+  - name: KAFKA_PRODUCT_TOPIC
+    value: "product-events"
 
 ## secret
 imagePullSecrets:
