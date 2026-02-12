@@ -38,19 +38,17 @@ spec:
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
 
-          # 🔥 ConfigMap + Secret 주입
           envFrom:
             - configMapRef:
                 name: {{ include "cart-service.fullname" . }}-config
             - secretRef:
-            name: {{ include "cart-service.fullname" . }}-secret
+                name: {{ include "cart-service.fullname" . }}-secret
 
           {{- if .Values.env }}
           env:
             {{- toYaml .Values.env | nindent 12 }}
           {{- end }}
 
-          # 🔥 Health Check (Spring Boot Actuator 기준)
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
