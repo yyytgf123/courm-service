@@ -1,5 +1,4 @@
-#image:
-#  tag: "18-6675529e"
+
 
 service:
   type: ClusterIP
