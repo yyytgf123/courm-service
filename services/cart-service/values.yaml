@@ -39,17 +39,11 @@ kafka:
   orderTopic: order-events
 
 # ------------------------
-# JWT
-# ------------------------
-jwt:
-  # secret은 Secret에서 주입
-  expiration: 3600000
-
-# ------------------------
 # Cognito
 # ------------------------
-cognito:
-  region: ap-northeast-2
+#cognito:
+#  region: ap-northeast-2
+#  userPoolId: ap-northeast-2_XXXXX
 
 # ------------------------
 # Gateway API
