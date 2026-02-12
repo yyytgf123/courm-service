@@ -3,11 +3,6 @@ profile: dev
 replicas: 1
 revisionHistoryLimit: 2
 
-# ------------------------
-# Image
-# ------------------------
-image:
-  tag: v1
 
 # ------------------------
 # Service
