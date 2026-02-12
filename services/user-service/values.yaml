@@ -32,7 +32,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-user
-  tag: "1d61939"
+  tag: "latest"
 
 replicas: 1
 
