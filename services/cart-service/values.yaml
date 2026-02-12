@@ -8,7 +8,7 @@ revisionHistoryLimit: 3
 # ------------------------
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
-  tag: "3134f25"
+  tag: "jh2"
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
