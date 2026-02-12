@@ -39,7 +39,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-user
-  tag: "latest"
+  tag: "29-58948091"
 
 replicas: 1
 
