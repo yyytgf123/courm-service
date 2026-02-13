@@ -99,3 +99,6 @@ otel:
   logsExporter: "none"
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"
