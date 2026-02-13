@@ -1,10 +1,5 @@
 profile: dev
 
-# Optional extra environment variables injected directly into the container.
-env: []
-
-
-
 replicas: 2
 revisionHistoryLimit: 3
 
@@ -13,7 +8,7 @@ revisionHistoryLimit: 3
 # ------------------------
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
-  tag: "4-e483c446"
+  tag: "5-f96f2e56"
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
@@ -39,11 +34,9 @@ redis:
 # Kafka
 # ------------------------
 kafka:
-  bootstrapServers: courm-kafka.courm-kafka.svc.cluster.local:9092
+  bootstrapServers: kafka.kafka.svc.cluster.local:9092
   consumerGroupId: cart-service-group
   orderTopic: order-events
-  paymentTopic: payment-events
-  productTopic: product-events
 
 # ------------------------
 # Cognito
