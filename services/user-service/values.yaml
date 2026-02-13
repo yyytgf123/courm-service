@@ -89,5 +89,9 @@ otel:
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
-# JVM 컨테이너 인식 옵션 및 메모리 효율화
-javaToolOptions: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
+# JVM 실행 옵션을 통한 카프카 주소 강제 주입
+javaToolOptions: >-
+  -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+  -XX:+UseContainerSupport
+  -XX:MaxRAMPercentage=75.0
+  -XX:+ExitOnOutOfMemoryError
