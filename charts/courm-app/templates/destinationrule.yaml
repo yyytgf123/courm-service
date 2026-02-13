@@ -2,10 +2,11 @@
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: {{ include "payment-service.fullname" . }}-cb
+  name: {{ include "courm-app.fullname" . }}-cb
   namespace: {{ .Release.Namespace }}
 spec:
-  host: {{ include "payment-service.fullname" . }}-active
+  # Blue/Green 배포 시 Active 서비스(운영중인 서비스)로 트래픽 제어
+  host: {{ include "courm-app.fullname" . }}-active
   trafficPolicy:
     connectionPool:
       tcp:
