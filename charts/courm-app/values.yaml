@@ -9,3 +9,17 @@ metrics:
     scheme: http
     additionalLabels:
       release: kube-prometheus-stack
+
+destinationRule:
+  enabled: false
+  connectionPool:
+    tcp:
+      maxConnections: 100
+    http:
+      http1MaxPendingRequests: 1024
+      maxRequestsPerConnection: 1024
+  outlierDetection:
+    consecutive5xxErrors: 5
+    interval: 1m
+    baseEjectionTime: 15m
+    maxEjectionPercent: 100
