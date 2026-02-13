@@ -23,12 +23,7 @@ service:
   type: ClusterIP
 
 
-# ------------------------
-# Redis
-# ------------------------
-redis:
-  host: local-redis.prod.svc.cluster.local
-  port: 6379
+
 
 # ------------------------
 # Kafka
@@ -37,13 +32,14 @@ kafka:
   bootstrapServers: courm-kafka.courm-kafka.svc.cluster.local:9092
   consumerGroupId: cart-service-group
   orderTopic: order-events
+  paymentTopic: payment-events
+  productTopic: product-events
 
 # ------------------------
 # Cognito
 # ------------------------
-#cognito:
-#  region: ap-northeast-2
-#  userPoolId: ap-northeast-2_XXXXX
+cognito:
+  jwkSetUri: https://dummy
 
 # ------------------------
 # Gateway API
@@ -103,7 +99,7 @@ otel:
 
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
-  -Dspring.data.redis.host=local-redis.prod.svc.cluster.local
+  -Dspring.data.redis.host=local-redis.dev.svc.cluster.local
   -Dspring.datasource.hikari.maximum-pool-size=20
   -Dspring.datasource.hikari.connection-timeout=5000
   -XX:+UseContainerSupport
