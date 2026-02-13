@@ -34,7 +34,7 @@ redis:
 # Kafka
 # ------------------------
 kafka:
-  bootstrapServers: kafka.kafka.svc.cluster.local:9092
+  bootstrapServers: courm-kafka.courm-kafka.svc.cluster.local:9092
   consumerGroupId: cart-service-group
   orderTopic: order-events
 

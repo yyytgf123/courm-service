@@ -1,4 +1,4 @@
-## env
+## 통합 환경 변수 설정 (중복 제거 및 최적화 완료)
 env:
   - name: DB_HOST
     value: "postgresql"
@@ -10,6 +10,9 @@ env:
     value: "postgres"
   - name: SPRING_DATASOURCE_PASSWORD
     value: "postgres"
+  # DB 커넥션 부족(Too many clients) 방지
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
   - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
     value: "courm-kafka.courm-kafka.svc.cluster.local:9092"
   - name: SPRING_KAFKA_CONSUMER_GROUP_ID
@@ -20,6 +23,12 @@ env:
     value: "payment-events"
   - name: KAFKA_PRODUCT_TOPIC
     value: "product-events"
+  # Cognito 설정 통합
+  - name: AWS_COGNITO_REGION
+    value: "ap-northeast-2"
+  # 프로파일 설정
+  - name: SPRING_PROFILES_ACTIVE
+    value: "prod"
 
 ## secret
 imagePullSecrets:
@@ -46,11 +55,6 @@ image:
 
 replicas: 1
 
-## Cognito
-env:
-  - name: AWS_COGNITO_REGION
-    value: "ap-northeast-2"
-
 ## Argo Rollouts Strategy
 strategy:
   type: blueGreen
@@ -58,14 +62,14 @@ strategy:
     autoPromotionEnabled: true
     scaleDownDelaySeconds: 300
 
-## Resource limits
+## Resource limits (t3.medium 환경에 맞춰 안정적으로 상향)
 resources:
   requests:
-    memory: "256Mi"
-    cpu: "250m"
-  limits:
-    memory: "512Mi"
+    memory: "768Mi"
     cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1"
 
 revisionHistoryLimit: 3
 
@@ -89,4 +93,5 @@ otel:
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
-javaToolOptions: ""   # 필요하면 "-Xms256m -Xmx512m" 같은거 여기에
+# JVM 힙 메모리 최적화 옵션
+javaToolOptions: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
