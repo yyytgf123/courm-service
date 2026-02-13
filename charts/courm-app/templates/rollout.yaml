@@ -33,9 +33,9 @@ spec:
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
 
-          {{- /* ===== env: (otel enabled OR 기존 env 존재) 일 때만 생성 ===== */}}
+          {{- /* ===== env: (otel/app env 존재) 일 때만 생성 ===== */}}
           {{- $otelEnabled := and .Values.otel .Values.otel.enabled }}
-          {{- if or $otelEnabled .Values.env }}
+          {{- if or $otelEnabled .Values.env .Values.profile .Values.logLevel .Values.redis .Values.kafka }}
           env:
             {{- /* ===== OTEL env (enabled일 때만) ===== */}}
             {{- if $otelEnabled }}
@@ -79,6 +79,48 @@ spec:
               value: {{ trim (printf "%s -javaagent:%s" $baseOpts $agentJar) | quote }}
             {{- end }}
 
+            {{- /* ===== App env ===== */}}
+            {{- with .Values.profile }}
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.logLevel }}
+            - name: LOG_LEVEL
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.redis }}
+            {{- with .host }}
+            - name: REDIS_HOST
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .port }}
+            - name: REDIS_PORT
+              value: {{ . | quote }}
+            {{- end }}
+            {{- end }}
+            {{- with .Values.kafka }}
+            {{- with .bootstrapServers }}
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .consumerGroupId }}
+            - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .orderTopic }}
+            - name: KAFKA_ORDER_TOPIC
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .paymentTopic }}
+            - name: KAFKA_PAYMENT_TOPIC
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .productTopic }}
+            - name: KAFKA_PRODUCT_TOPIC
+              value: {{ . | quote }}
+            {{- end }}
+            {{- end }}
+
             {{- /* ===== 기존 사용자 env 유지 ===== */}}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
@@ -109,9 +151,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
+  {{- if .Values.strategy }}
+  {{- if eq .Values.strategy.type "blueGreen" }}
+  strategy:
+    blueGreen:
+      activeService: {{ include "courm-app.fullname" . }}-active
+      previewService: {{ include "courm-app.fullname" . }}-preview
+      autoPromotionEnabled: {{ .Values.strategy.blueGreen.autoPromotionEnabled | default true }}
+      scaleDownDelaySeconds: {{ .Values.strategy.blueGreen.scaleDownDelaySeconds | default 300 }}
+  {{- end }}
+  {{- else }}
   strategy:
     blueGreen:
       activeService: {{ include "courm-app.fullname" . }}-active
       previewService: {{ include "courm-app.fullname" . }}-preview
       autoPromotionEnabled: true
       scaleDownDelaySeconds: 300
+  {{- end }}

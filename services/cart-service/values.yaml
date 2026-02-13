@@ -27,7 +27,7 @@ service:
 # Redis
 # ------------------------
 redis:
-  host: redis.commerce.svc.cluster.local
+  host: local-redis
   port: 6379
 
 # ------------------------
