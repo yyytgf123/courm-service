@@ -1,16 +1,16 @@
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: {{ include "cart-service.fullname" . }}-config
-#data:
-#  SPRING_PROFILES_ACTIVE: {{ .Values.profile }}
-#
-#  REDIS_HOST: {{ .Values.redis.host | quote }}
-#  REDIS_PORT: {{ .Values.redis.port | quote }}
-#
-#  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.bootstrapServers | quote }}
-#
-#  LOG_LEVEL: {{ .Values.logLevel | quote }}
-#
-#  AWS_COGNITO_REGION: { { .Values.cognito.region | quote } }
-#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cart-service.fullname" . }}-config
+  labels:
+    {{- include "cart-service.labels" . | nindent 4 }}
+data:
+  SPRING_PROFILES_ACTIVE: {{ .Values.profile | default "prod" | quote }}
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.bootstrapServers | quote }}
+  SPRING_KAFKA_CONSUMER_GROUP_ID: {{ .Values.kafka.consumerGroupId | quote }}
+  KAFKA_ORDER_TOPIC: {{ .Values.kafka.orderTopic | quote }}
+  KAFKA_PAYMENT_TOPIC: {{ .Values.kafka.paymentTopic | quote }}
+  KAFKA_PRODUCT_TOPIC: {{ .Values.kafka.productTopic | quote }}
+  REDIS_HOST: {{ .Values.redis.host | quote }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
+  LOG_LEVEL: {{ .Values.logLevel | quote }}

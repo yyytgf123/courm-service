@@ -1,14 +1,7 @@
-env:
-  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-    value: "courm-kafka.courm-kafka.svc.cluster.local:9092"
-  - name: SPRING_KAFKA_CONSUMER_GROUP_ID
-    value: "order-service-group"
-  - name: KAFKA_ORDER_TOPIC
-    value: "order-events"
-  - name: KAFKA_PAYMENT_TOPIC
-    value: "payment-events"
-  - name: KAFKA_PRODUCT_TOPIC
-    value: "product-events"
+profile: dev
+
+# Optional extra environment variables injected directly into the container.
+env: []
 
 
 
@@ -46,9 +39,11 @@ redis:
 # Kafka
 # ------------------------
 kafka:
-  bootstrapServers: kafka.kafka.svc.cluster.local:9092
+  bootstrapServers: courm-kafka.courm-kafka.svc.cluster.local:9092
   consumerGroupId: cart-service-group
   orderTopic: order-events
+  paymentTopic: payment-events
+  productTopic: product-events
 
 # ------------------------
 # Cognito
