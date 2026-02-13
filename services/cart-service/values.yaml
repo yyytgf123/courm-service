@@ -99,10 +99,13 @@ otel:
 
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
-  -Dspring.data.redis.host=local-redis.dev.svc.cluster.local
+  -Dspring.data.redis.host=master.courm-redis-prod.epf9hv.apn2.cache.amazonaws.com
+  -Dspring.data.redis.port=6379
+  -Dspring.data.redis.ssl.enabled=true
   -Dspring.datasource.hikari.maximum-pool-size=20
   -Dspring.datasource.hikari.connection-timeout=5000
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
   -XX:+ExitOnOutOfMemoryError
+
 logLevel: INFO
