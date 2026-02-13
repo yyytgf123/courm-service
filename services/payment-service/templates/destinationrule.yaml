@@ -1,0 +1,21 @@
+{{- if .Values.destinationRule.enabled -}}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ include "payment-service.fullname" . }}-cb
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ include "payment-service.fullname" . }}-active
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: {{ .Values.destinationRule.connectionPool.tcp.maxConnections }}
+      http:
+        http1MaxPendingRequests: {{ .Values.destinationRule.connectionPool.http.http1MaxPendingRequests }}
+        maxRequestsPerConnection: {{ .Values.destinationRule.connectionPool.http.maxRequestsPerConnection }}
+    outlierDetection:
+      consecutive5xxErrors: {{ .Values.destinationRule.outlierDetection.consecutive5xxErrors }}
+      interval: {{ .Values.destinationRule.outlierDetection.interval }}
+      baseEjectionTime: {{ .Values.destinationRule.outlierDetection.baseEjectionTime }}
+      maxEjectionPercent: {{ .Values.destinationRule.outlierDetection.maxEjectionPercent }}
+{{- end }}

@@ -8,7 +8,7 @@ revisionHistoryLimit: 3
 # ------------------------
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
-  tag: "7-6aca1ca1"
+  tag: "11-7dc87d4f"
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
@@ -27,7 +27,7 @@ service:
 # Redis
 # ------------------------
 redis:
-  host: local-redis
+  host: local-redis.prod.svc.cluster.local
   port: 6379
 
 # ------------------------
@@ -103,6 +103,9 @@ otel:
 
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+  -Dspring.data.redis.host=local-redis.prod.svc.cluster.local
+  -Dspring.datasource.hikari.maximum-pool-size=20
+  -Dspring.datasource.hikari.connection-timeout=5000
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
   -XX:+ExitOnOutOfMemoryError
