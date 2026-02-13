@@ -30,6 +30,13 @@ env:
   - name: SPRING_PROFILES_ACTIVE
     value: "prod"
 
+redis:
+  host: local-redis.prod.svc.cluster.local
+  port: 6379
+  username: default
+  password: NewStrongPass123!
+  sslEnabled: true
+
 ## secret
 imagePullSecrets:
   - name: ecr-secret

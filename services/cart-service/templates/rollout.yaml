@@ -42,6 +42,8 @@ spec:
             - configMapRef:
                 name: {{ include "cart-service.fullname" . }}-config
             - secretRef:
+                name: {{ include "cart-service.fullname" . }}-redis
+            - secretRef:
                 name: {{ include "cart-service.fullname" . }}-secret
 
           {{- if .Values.env }}
