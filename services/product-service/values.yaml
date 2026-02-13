@@ -95,6 +95,8 @@ otel:
 
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+  -Dspring.data.redis.host=local-redis
+  -Dspring.data.redis.port=6379
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
   -XX:+ExitOnOutOfMemoryError
