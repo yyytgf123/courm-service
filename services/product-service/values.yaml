@@ -92,12 +92,3 @@ otel:
   logsExporter: "none"
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
-
-javaToolOptions: >-
-  -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
-  -Dspring.data.redis.host=local-redis.prod.svc.cluster.local
-  -Dspring.datasource.hikari.maximum-pool-size=20
-  -Dspring.datasource.hikari.connection-timeout=5000
-  -XX:+UseContainerSupport
-  -XX:MaxRAMPercentage=75.0
-  -XX:+ExitOnOutOfMemoryError

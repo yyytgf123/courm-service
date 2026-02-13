@@ -38,3 +38,10 @@ otel:
   resourceAttributes: "deployment.environment=prod,service.version=1.0.0"
   sampler: "parentbased_traceidratio"
   samplerArg: "0.1"   # 운영은 보통 10% 같은 식으로 낮춤
+
+# ------------------------
+# Redis (Dev)
+# ------------------------
+redis:
+  host: local-redis.prod.svc.cluster.local
+  port: 6379

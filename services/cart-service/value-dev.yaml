@@ -16,7 +16,9 @@ service:
 # ------------------------
 # Redis (Dev)
 # ------------------------
-
+redis:
+  host: local-redis.dev.svc.cluster.local
+  port: 6379
 
 # ------------------------
 # Kafka (Dev)
