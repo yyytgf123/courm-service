@@ -1,15 +1,11 @@
-#image:
-#  tag: "18-6675529e"
+
+profile: prod
 
 service:
   type: ClusterIP
 
 service2:
   type: ClusterIP
-
-env:
-  - name: SPRING_PROFILES_ACTIVE
-    value: prod
 
 replicaCount: 1
 

@@ -8,7 +8,7 @@ revisionHistoryLimit: 3
 # ------------------------
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
-  tag: "5-f96f2e56"
+  tag: "9-eeb107bd"
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
@@ -27,14 +27,14 @@ service:
 # Redis
 # ------------------------
 redis:
-  host: redis.commerce.svc.cluster.local
+  host: local-redis
   port: 6379
 
 # ------------------------
 # Kafka
 # ------------------------
 kafka:
-  bootstrapServers: kafka.kafka.svc.cluster.local:9092
+  bootstrapServers: courm-kafka.courm-kafka.svc.cluster.local:9092
   consumerGroupId: cart-service-group
   orderTopic: order-events
 
@@ -101,5 +101,12 @@ otel:
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
-javaToolOptions: ""
+javaToolOptions: >-
+  -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+  -Dspring.data.redis.host=local-redis.prod.svc.cluster.local
+  -Dspring.datasource.hikari.maximum-pool-size=20
+  -Dspring.datasource.hikari.connection-timeout=5000
+  -XX:+UseContainerSupport
+  -XX:MaxRAMPercentage=75.0
+  -XX:+ExitOnOutOfMemoryError
 logLevel: INFO

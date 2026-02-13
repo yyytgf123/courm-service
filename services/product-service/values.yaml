@@ -1,4 +1,4 @@
-## env
+## 통합 환경 변수 설정
 env:
   - name: DB_HOST
     value: "postgresql"
@@ -10,6 +10,9 @@ env:
     value: "postgres"
   - name: SPRING_DATASOURCE_PASSWORD
     value: "postgres"
+  # DB 'Too many clients' 에러 방지를 위한 커넥션 제한
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "5"
   - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
     value: "courm-kafka.courm-kafka.svc.cluster.local:9092"
   - name: SPRING_KAFKA_CONSUMER_GROUP_ID
@@ -20,6 +23,12 @@ env:
     value: "payment-events"
   - name: KAFKA_PRODUCT_TOPIC
     value: "product-events"
+  # Cognito 설정 통합
+  - name: AWS_COGNITO_REGION
+    value: "ap-northeast-2"
+  # 프로파일 설정
+  - name: SPRING_PROFILES_ACTIVE
+    value: "prod"
 
 ## secret
 imagePullSecrets:
@@ -42,14 +51,9 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-product
-  tag: "5-f96f2e56"
+  tag: "9-eeb107bd"
 
 replicas: 1
-
-## Cognito
-env:
-  - name: AWS_COGNITO_REGION
-    value: "ap-northeast-2"
 
 ## Argo Rollouts Strategy
 strategy:
@@ -58,14 +62,14 @@ strategy:
     autoPromotionEnabled: true
     scaleDownDelaySeconds: 300
 
-## Resource limits
+## Resource limits (t3.medium 환경에서의 안정적 가동을 위해 상향)
 resources:
   requests:
-    memory: "256Mi"
-    cpu: "250m"
-  limits:
-    memory: "512Mi"
+    memory: "768Mi"
     cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1"
 
 revisionHistoryLimit: 3
 
@@ -89,4 +93,11 @@ otel:
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
-javaToolOptions: ""   # 필요하면 "-Xms256m -Xmx512m" 같은거 여기에
+javaToolOptions: >-
+  -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+  -Dspring.data.redis.host=local-redis.prod.svc.cluster.local
+  -Dspring.datasource.hikari.maximum-pool-size=20
+  -Dspring.datasource.hikari.connection-timeout=5000
+  -XX:+UseContainerSupport
+  -XX:MaxRAMPercentage=75.0
+  -XX:+ExitOnOutOfMemoryError
