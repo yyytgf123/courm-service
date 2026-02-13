@@ -11,6 +11,9 @@ data:
   KAFKA_ORDER_TOPIC: {{ .Values.kafka.orderTopic | quote }}
   KAFKA_PAYMENT_TOPIC: {{ .Values.kafka.paymentTopic | quote }}
   KAFKA_PRODUCT_TOPIC: {{ .Values.kafka.productTopic | quote }}
+  SPRING_DATA_REDIS_HOST: {{ .Values.redis.host | quote }}
+  SPRING_REDIS_HOST: {{ .Values.redis.host | quote }}
+  SPRING_DATA_REDIS_PORT: {{ .Values.redis.port | quote }}
   REDIS_HOST: {{ .Values.redis.host | quote }}
   REDIS_PORT: {{ .Values.redis.port | quote }}
   LOG_LEVEL: {{ .Values.logLevel | quote }}

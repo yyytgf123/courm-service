@@ -51,7 +51,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-payment
-  tag: "7-6aca1ca1"
+  tag: "9-eeb107bd"
 
 replicas: 1
 
@@ -92,6 +92,24 @@ otel:
   logsExporter: "none"
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
+
+javaToolOptions: ""   # 필요하면 "-Xms256m -Xmx512m" 같은거 여기에
+
+## Istio DestinationRule 
+## (Circuit Breaker)
+destinationRule:
+  enabled: true
+  connectionPool:
+    tcp:
+      maxConnections: 100
+    http:
+      http1MaxPendingRequests: 10
+      maxRequestsPerConnection: 1
+  outlierDetection:
+    consecutive5xxErrors: 5
+    interval: 10s
+    baseEjectionTime: 30s
+    maxEjectionPercent: 100
 
 # JVM 컨테이너 인식 옵션 및 메모리 효율화
 javaToolOptions: >-

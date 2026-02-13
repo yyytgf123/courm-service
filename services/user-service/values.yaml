@@ -47,7 +47,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-user
-  tag: "8-3500a496"
+  tag: "10-005a584b"
 
 replicas: 1
 

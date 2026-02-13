@@ -51,7 +51,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-product
-  tag: "7-6aca1ca1"
+  tag: "11-7dc87d4f"
 
 replicas: 1
 
@@ -95,8 +95,8 @@ otel:
 
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
-  -Dspring.data.redis.host=local-redis
-  -Dspring.data.redis.port=6379
+  -Dspring.datasource.hikari.maximum-pool-size=20
+  -Dspring.datasource.hikari.connection-timeout=5000
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
   -XX:+ExitOnOutOfMemoryError
