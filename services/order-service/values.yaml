@@ -51,7 +51,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-order
-  tag: "11-7dc87d4f"
+  tag: "13-dc0a4c3f"
 
 replicas: 1
 
