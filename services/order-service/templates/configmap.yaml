@@ -1,20 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "product-service.fullname" . }}-config
+  name: {{ include "order-service.fullname" . }}-config
   labels:
-    {{- include "product-service.labels" . | nindent 4 }}
+    {{- include "order-service.labels" . | nindent 4 }}
 data:
   SPRING_KAFKA_BOOTSTRAP_SERVERS: {{ .Values.config.springKafkaBootstrapServers | quote }}
   KAFKA_BOOTSTRAP_SERVERS: {{ .Values.config.kafkaBootstrapServers | quote }}
+  USER_SERVICE_URL: {{ .Values.config.userServiceUrl | quote }}
+  PRODUCT_SERVICE_URL: {{ .Values.config.productServiceUrl | quote }}
   SERVER_PORT: {{ .Values.config.serverPort | quote }}
   SPRING_DATASOURCE_URL: {{ .Values.config.springDatasourceUrl | quote }}
   AWS_COGNITO_JWK_SET_URI: {{ .Values.config.awsCognitoJwkSetUri | quote }}
   DB_HOST: {{ .Values.config.dbHost | quote }}
   DB_PORT: {{ .Values.config.dbPort | quote }}
   DB_NAME: {{ .Values.config.dbName | quote }}
-  SPRING_DATA_REDIS_HOST: {{ .Values.redis.host | quote }}
-  SPRING_REDIS_HOST: {{ .Values.redis.host | quote }}
-  SPRING_DATA_REDIS_PORT: {{ .Values.redis.port | quote }}
-  REDIS_HOST: {{ .Values.redis.host | quote }}
-  REDIS_PORT: {{ .Values.redis.port | quote }}

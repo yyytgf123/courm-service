@@ -24,6 +24,12 @@ redis:
   sslEnabled: true
 
 # ------------------------
+# Internal Service URLs (Dev)
+# ------------------------
+product:
+  serviceUrl: http://product:8080
+
+# ------------------------
 # Kafka (Dev)
 # ------------------------
 
@@ -58,5 +64,15 @@ resources:
     memory: "512Mi"
     cpu: "500m"
 
+
 # ------------------------
-# OpenTelemetry (De
+# EKS Handoff Notes (2026-02-18)
+# ------------------------
+# dev values에서도 아래 원칙 동일:
+# - kafka.bootstrapServers, redis.host/port, cognito.jwkSetUri 는 값 변경 시 반영됨.
+# - PRODUCT_SERVICE_URL 은 2026-02-18 반영 완료(configmap에서 .Values.product.serviceUrl 주입).
+#
+# 예시(동일 namespace):
+# - Product URL: http://product:8080
+# - Redis Host: <redis-service-name>
+# - Kafka Bootstrap: <kafka-service-name>:9092

@@ -46,11 +46,6 @@ spec:
             - secretRef:
                 name: {{ include "cart-service.fullname" . }}-secret
 
-          {{- if .Values.env }}
-          env:
-            {{- toYaml .Values.env | nindent 12 }}
-          {{- end }}
-
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness

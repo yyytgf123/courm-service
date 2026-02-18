@@ -29,10 +29,11 @@ spec:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
-          {{- if .Values.env }}
-          env:
-            {{- toYaml .Values.env | nindent 12 }}
-          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "order-service.fullname" . }}-config
+            - secretRef:
+                name: {{ include "order-service.fullname" . }}-secret
           {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "user-service.fullname" . }}-config
+  labels:
+    {{- include "user-service.labels" . | nindent 4 }}
+data:
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: {{ .Values.config.springKafkaBootstrapServers | quote }}
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.config.kafkaBootstrapServers | quote }}
+  SERVER_PORT: {{ .Values.config.serverPort | quote }}
+  SPRING_DATASOURCE_URL: {{ .Values.config.springDatasourceUrl | quote }}
+  AWS_COGNITO_REGION: {{ .Values.config.awsCognitoRegion | quote }}
+  AWS_COGNITO_USER_POOL_ID: {{ .Values.config.awsCognitoUserPoolId | quote }}
+  AWS_COGNITO_JWK_SET_URI: {{ .Values.config.awsCognitoJwkSetUri | quote }}
+  AWS_COGNITO_CLIENT_ID: {{ .Values.config.awsCognitoClientId | quote }}

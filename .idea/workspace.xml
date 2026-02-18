@@ -4,11 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="" />
+    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/cart-service/templates/configmap.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/templates/configmap.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/cart-service/templates/rollout.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/templates/rollout.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/cart-service/templates/secret.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/templates/secret.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/cart-service/value-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/value-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/cart-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/values.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/templates/rollout.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/templates/rollout.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/values.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/payment-service/templates/rollout.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/payment-service/templates/rollout.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/payment-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/payment-service/values.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/product-service/templates/configmap.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/product-service/templates/configmap.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/product-service/templates/rollout.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/product-service/templates/rollout.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/product-service/value-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/product-service/value-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/product-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/product-service/values.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/user-service/templates/rollout.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/user-service/templates/rollout.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/user-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/user-service/values.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="65" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -50,7 +70,9 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/lhh/Desktop/project/infra/k8s/courm-service&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -61,6 +83,7 @@
     &quot;project.structure.last.edited&quot;: &quot;모듈&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.23563218&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -118,6 +141,12 @@
       <workItem from="1770560063345" duration="6432000" />
       <workItem from="1770600086741" duration="9042000" />
       <workItem from="1770687128594" duration="17607000" />
+      <workItem from="1770897300997" duration="18036000" />
+      <workItem from="1771150150471" duration="1320000" />
+      <workItem from="1771397178493" duration="597000" />
+      <workItem from="1771399454212" duration="140000" />
+      <workItem from="1771406553538" duration="693000" />
+      <workItem from="1771411155584" duration="1663000" />
     </task>
     <servers />
   </component>

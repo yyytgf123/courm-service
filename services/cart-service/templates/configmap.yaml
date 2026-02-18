@@ -5,8 +5,14 @@ metadata:
   labels:
     {{- include "cart-service.labels" . | nindent 4 }}
 data:
+  SERVER_PORT: {{ .Values.config.serverPort | quote }}
+  SPRING_DATASOURCE_URL: {{ .Values.config.springDatasourceUrl | quote }}
+  DB_HOST: {{ .Values.config.dbHost | quote }}
+  DB_PORT: {{ .Values.config.dbPort | quote }}
+  DB_NAME: {{ .Values.config.dbName | quote }}
   SPRING_PROFILES_ACTIVE: {{ .Values.profile | default "prod" | quote }}
   SPRING_KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.bootstrapServers | quote }}
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.bootstrapServers | quote }}
   SPRING_KAFKA_CONSUMER_GROUP_ID: {{ .Values.kafka.consumerGroupId | quote }}
   KAFKA_ORDER_TOPIC: {{ .Values.kafka.orderTopic | quote }}
   KAFKA_PAYMENT_TOPIC: {{ .Values.kafka.paymentTopic | quote }}
@@ -16,4 +22,7 @@ data:
   SPRING_DATA_REDIS_PORT: {{ .Values.redis.port | quote }}
   REDIS_HOST: {{ .Values.redis.host | quote }}
   REDIS_PORT: {{ .Values.redis.port | quote }}
+  PRODUCT_SERVICE_URL: {{ .Values.product.serviceUrl | quote }}
+  COGNITO_JWK_SET_URI: {{ .Values.cognito.jwkSetUri | quote }}
+  AWS_COGNITO_JWK_SET_URI: {{ .Values.cognito.awsJwkSetUri | default .Values.cognito.jwkSetUri | quote }}
   LOG_LEVEL: {{ .Values.logLevel | quote }}

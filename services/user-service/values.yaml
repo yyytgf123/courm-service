@@ -1,30 +1,18 @@
-## 통합 환경 변수 설정 (중복 제거 및 최적화 완료)
-env:
-  - name: DB_HOST
-    value: "postgresql"
-  - name: DB_PORT
-    value: "5432"
-  - name: DB_NAME
-    value: "ecommerce"
-  - name: SPRING_DATASOURCE_USERNAME
-    value: "postgres"
-  - name: SPRING_DATASOURCE_PASSWORD
-    value: "postgres"
-  # DB 커넥션 과부하 방지
-  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
-    value: "5"
-  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-    value: "courm-kafka.courm-kafka.svc.cluster.local:9092"
-  - name: SPRING_KAFKA_CONSUMER_GROUP_ID
-    value: "user-service-group"
-  - name: KAFKA_USER_TOPIC
-    value: "user-events"
-  # 하단에 따로 있던 Cognito 설정 통합
-  - name: AWS_COGNITO_REGION
-    value: "ap-northeast-2"
-  # 운영 프로파일 활성화
-  - name: SPRING_PROFILES_ACTIVE
-    value: "prod"
+## Local docker-compose env mapping
+config:
+  springKafkaBootstrapServers: "courm-kafka.courm-kafka.svc.cluster.local:9092"
+  kafkaBootstrapServers: "courm-kafka.courm-kafka.svc.cluster.local:9092"
+  serverPort: "8080"
+  springDatasourceUrl: "jdbc:postgresql://postgresql:5432/ecommerce"
+  awsCognitoRegion: "ap-northeast-2"
+  awsCognitoUserPoolId: "ap-northeast-2_HmqfrWP3T"
+  awsCognitoJwkSetUri: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_HmqfrWP3T/.well-known/jwks.json"
+  awsCognitoClientId: "7dhk1lsqh5c1v9gqh1evtdlpoq"
+
+secret:
+  dbUsername: "postgres"
+  dbPassword: "postgres"
+  awsCognitoClientSecret: "8iqncgv83mbnmion6f06rlj4mvib1ii0adg7po283g0vss9581p"
 
 ## secret
 imagePullSecrets:
