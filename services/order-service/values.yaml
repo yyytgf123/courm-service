@@ -1,4 +1,4 @@
-## 통합 환경 변수 설정 (중복 제거 및 최적화 완료)
+## 통합 환경 변수 설정
 env:
   - name: DB_HOST
     value: "postgresql"
@@ -10,7 +10,6 @@ env:
     value: "postgres"
   - name: SPRING_DATASOURCE_PASSWORD
     value: "postgres"
-  # DB 커넥션 부족(Too many clients) 방지
   - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
     value: "5"
   - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
@@ -23,14 +22,11 @@ env:
     value: "payment-events"
   - name: KAFKA_PRODUCT_TOPIC
     value: "product-events"
-  # Cognito 설정 통합
   - name: AWS_COGNITO_REGION
     value: "ap-northeast-2"
-  # 프로파일 설정
   - name: SPRING_PROFILES_ACTIVE
     value: "prod"
 
-## secret
 imagePullSecrets:
   - name: ecr-secret
 
@@ -39,10 +35,22 @@ route:
   enabled: true
   gatewayName: prod-gw
   gatewayNamespace: istio-system
-  path: /api/v2/order
+
+  # /api 아래는 전부 Istio로
+  path: /api
   pathType: PathPrefix
   weight: 1
-  hostnames: []
+
+  # Host 기반 라우팅
+  hostnames:
+    - order.example.com
+
+  # /api prefix 제거해서 앱에 원래 경로로 전달
+  # /api/actuator/health  ->  /actuator/health
+  # /api/v2/orders/...    ->  /v2/orders/... (앱이 /api/v2/...를 기대하면 아래 replace를 "/api"로 바꾸면 됨)
+  urlRewrite:
+    enabled: true
+    replacePrefixMatch: "/"
 
 service:
   port: 80
@@ -55,14 +63,12 @@ image:
 
 replicas: 1
 
-## Argo Rollouts Strategy
 strategy:
   type: blueGreen
   blueGreen:
     autoPromotionEnabled: true
     scaleDownDelaySeconds: 300
 
-## Resource limits (t3.medium 환경에 맞춰 안정적으로 상향)
 resources:
   requests:
     memory: "768Mi"
@@ -73,7 +79,6 @@ resources:
 
 revisionHistoryLimit: 3
 
-## Monitoring
 metrics:
   enabled: true
   serviceMonitor:
@@ -81,7 +86,6 @@ metrics:
     additionalLabels:
       release: kube-prometheus-stack
 
-# Tempo
 otel:
   enabled: false
   serviceName: order-service
@@ -93,7 +97,6 @@ otel:
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
-# JVM 힙 메모리 최적화 옵션
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
   -XX:+UseContainerSupport
