@@ -3,8 +3,17 @@ profile: dev
 config:
   serverPort: "8080"
 
-replicas: 2
+replicas: 1
 revisionHistoryLimit: 3
+
+# ------------------------
+# HPA (Auto-Scaling)
+# ------------------------
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPU: 50
 
 # ------------------------
 # Image
@@ -80,12 +89,12 @@ strategy:
     scaleDownDelaySeconds: 300
 
 # ------------------------
-# Resources
+# Resources (Guaranteed QoS: requests = limits → Evict 방지)
 # ------------------------
 resources:
   requests:
-    memory: "256Mi"
-    cpu: "250m"
+    memory: "512Mi"
+    cpu: "500m"
   limits:
     memory: "512Mi"
     cpu: "500m"
@@ -104,9 +113,9 @@ metrics:
 # OpenTelemetry (Tempo)
 # ------------------------
 otel:
-  enabled: false
+  enabled: true
   serviceName: cart-service
-  otlpEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4318"
+  otlpEndpoint: "http://loki-stack.logging.svc.cluster.local:4318" # Assuming we will deploy collector there or use simpler setup
   otlpProtocol: "http/protobuf"
   tracesExporter: "otlp"
   metricsExporter: "none"
@@ -115,6 +124,9 @@ otel:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
 javaToolOptions: >-
+  -javaagent:/otel/opentelemetry-javaagent.jar
+  -Dotel.resource.attributes=service.name=cart-service
+  -Dotel.exporter.otlp.endpoint=http://loki-stack.logging.svc.cluster.local:4318
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0

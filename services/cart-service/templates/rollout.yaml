@@ -46,6 +46,21 @@ spec:
             - secretRef:
                 name: {{ include "cart-service.fullname" . }}-secret
 
+          {{- if .Values.env }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          {{- end }}
+            {{- if .Values.otel.enabled }}
+            - name: OTEL_JAVAAGENT_ENABLED
+              value: "true"
+            - name: OTEL_TRACES_EXPORTER
+              value: {{ .Values.otel.tracesExporter }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.otel.otlpEndpoint }}
+            - name: OTEL_SERVICE_NAME
+              value: {{ .Values.otel.serviceName }}
+            {{- end }}
+
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
@@ -66,6 +81,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
+          volumeMounts:
+            - name: otel-agent
+              mountPath: /otel
 
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -81,6 +99,9 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: otel-agent
+          emptyDir: {}
 
   {{- if .Values.strategy }}
   {{- if eq .Values.strategy.type "blueGreen" }}
