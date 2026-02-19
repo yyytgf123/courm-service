@@ -30,10 +30,10 @@ redis:
   port: 6379
   username: "app-user"
   password: "NewStrongPass123!"
-  sslEnabled: true
+  sslEnabled: false
 
 # ------------------------
-# Internal Service URLs 여기 주석
+# Internal Service URLs
 # ------------------------
 product:
   serviceUrl: http://product-service-dev-courm-app-active
