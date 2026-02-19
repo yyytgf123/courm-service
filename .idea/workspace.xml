@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/cart-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/values.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/order-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/values.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/payment-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/payment-service/values.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/product-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/product-service/values.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/user-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/user-service/values.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -136,7 +129,7 @@
       <workItem from="1771397178493" duration="597000" />
       <workItem from="1771399454212" duration="140000" />
       <workItem from="1771406553538" duration="693000" />
-      <workItem from="1771411155584" duration="7264000" />
+      <workItem from="1771411155584" duration="7980000" />
     </task>
     <servers />
   </component>

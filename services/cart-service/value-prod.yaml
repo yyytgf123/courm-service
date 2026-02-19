@@ -56,3 +56,6 @@ redis:
   username: default
   password: NewStrongPass123!
   sslEnabled: true
+
+product:
+  serviceUrl: http://product-service-prod-courm-app-active

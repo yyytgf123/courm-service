@@ -44,6 +44,10 @@ strategy:
     previewHeader:
       enabled: true
 
+config:
+  userServiceUrl: http://user-service-prod-courm-app-active
+  productServiceUrl: http://product-service-prod-courm-app-active
+
 # Tempo
 otel:
   enabled: true
