@@ -1,3 +1,20 @@
+strategy:
+  type: blueGreen
+  blueGreen:
+    # false: 수동 promote 필요 / true: autoPromotionSeconds 경과 후 자동 promote
+    autoPromotionEnabled: false
+    # preview 유지 시간(초). autoPromotionEnabled: true 일 때만 동작
+    # autoPromotionSeconds: 300
+    # promote 후 구버전 Pod 제거까지 대기 시간(초)
+    scaleDownDelaySeconds: 300
+    previewHeader:
+      # true로 설정하면 헤더가 있는 요청을 preview(신버전)로 라우팅
+      enabled: false
+      # 라우팅 판단에 사용할 헤더 이름
+      name: X-Preview
+      # 라우팅 판단에 사용할 헤더 값
+      value: "true"
+
 metrics:
   enabled: false
   serviceMonitor:

@@ -119,9 +119,18 @@ spec:
   {{- if eq .Values.strategy.type "blueGreen" }}
   strategy:
     blueGreen:
+      # 실 트래픽을 받는 서비스 (구버전 → 신버전으로 교체됨)
       activeService: {{ include "courm-app.fullname" . }}-active
+      # 신버전 배포 시 검증용으로 먼저 뜨는 서비스
       previewService: {{ include "courm-app.fullname" . }}-preview
-      autoPromotionEnabled: {{ .Values.strategy.blueGreen.autoPromotionEnabled | default true }}
+      # false: 수동으로 promote 명령 필요 / true: autoPromotionSeconds 후 자동 promote
+      autoPromotionEnabled: {{ .Values.strategy.blueGreen.autoPromotionEnabled | default false }}
+      {{- if .Values.strategy.blueGreen.autoPromotionSeconds }}
+      # preview 유지 시간(초). 이 시간 동안 X-Preview 헤더로 신버전 테스트 가능
+      # 시간 전에 promote하려면: kubectl argo rollouts promote <name> -n <namespace>
+      autoPromotionSeconds: {{ .Values.strategy.blueGreen.autoPromotionSeconds }}
+      {{- end }}
+      # promote 후 구버전 Pod를 제거하기까지 대기 시간(초)
       scaleDownDelaySeconds: {{ .Values.strategy.blueGreen.scaleDownDelaySeconds | default 300 }}
   {{- end }}
   {{- else }}
@@ -129,6 +138,6 @@ spec:
     blueGreen:
       activeService: {{ include "courm-app.fullname" . }}-active
       previewService: {{ include "courm-app.fullname" . }}-preview
-      autoPromotionEnabled: true
+      autoPromotionEnabled: false
       scaleDownDelaySeconds: 300
   {{- end }}
