@@ -14,11 +14,11 @@ secret:
   dbPassword: "postgres"
 
 redis:
-  host: local-redis.prod.svc.cluster.local
+  host: master.courm-redis-prod.epf9hv.apn2.cache.amazonaws.com
   port: 6379
   username: "app-user"
   password: "NewStrongPass123!"
-  sslEnabled: false
+  sslEnabled: true
 
 ## secret
 imagePullSecrets:

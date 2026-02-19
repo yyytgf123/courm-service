@@ -18,11 +18,11 @@ service:
 # ------------------------
 redis:
   # Redis 설정은 redis.* 값으로만 주입하고 JAVA_TOOL_OPTIONS의 -Dspring.data.redis.*는 사용하지 않음
-  host: local-redis.dev.svc.cluster.local
+  host: master.courm-redis-prod.epf9hv.apn2.cache.amazonaws.com
   port: 6379
   username: "app-user"
   password: "NewStrongPass123!"
-  sslEnabled: false
+  sslEnabled: true
 
 # ------------------------
 # Internal Service URLs (Dev)

@@ -53,17 +53,15 @@ otel:
 
 # redis
 redis:
-  host: local-redis.prod.svc.cluster.local
+  host: master.courm-redis-prod.epf9hv.apn2.cache.amazonaws.com
   port: 6379
-  username: default
+  username: app-user
   password: NewStrongPass123!
-  sslEnabled: false
+  sslEnabled: true
 
 # redis (legacy JVM option)
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
-  -Dspring.data.redis.host=local-redis.prod.svc.cluster.local
-  -Dspring.data.redis.port=6379
   -Dspring.datasource.hikari.maximum-pool-size=20
   -Dspring.datasource.hikari.connection-timeout=5000
   -XX:+UseContainerSupport
