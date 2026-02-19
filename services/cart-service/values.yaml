@@ -11,7 +11,7 @@ revisionHistoryLimit: 3
 # ------------------------
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
-  tag: "4-365b3684"
+  tag: "6-88e7df5c"
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
