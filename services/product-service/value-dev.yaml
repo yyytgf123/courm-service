@@ -37,8 +37,8 @@ otel:
 redis:
   host: local-redis.dev.svc.cluster.local
   port: 6379
-  username: default
-  password: NewStrongPass123!
+  username: "app-user"
+  password: "NewStrongPass123!"
   sslEnabled: true
 
 # redis (legacy JVM option)
