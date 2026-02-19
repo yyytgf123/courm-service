@@ -48,3 +48,23 @@ otel:
   resourceAttributes: "deployment.environment=dev,service.version=1.0.0"
   sampler: "parentbased_traceidratio"
   samplerArg: "1.0"   # 처음엔 100%로 켜서 잘 들어오는지 확인
+
+redis:
+  host: local-redis.dev.svc.cluster.local
+  port: 6379
+  username: "app-user"
+  password: "NewStrongPass123!"
+  sslEnabled: false
+
+# redis (legacy JVM option)
+javaToolOptions: >-
+  -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+  -Dspring.data.redis.host=local-redis.dev.svc.cluster.local
+  -Dspring.data.redis.port=6379
+  -Dspring.data.redis.username=app-user
+  -Dspring.data.redis.password=NewStrongPass123!
+  -Dspring.datasource.hikari.maximum-pool-size=20
+  -Dspring.datasource.hikari.connection-timeout=5000
+  -XX:+UseContainerSupport
+  -XX:MaxRAMPercentage=75.0
+  -XX:+ExitOnOutOfMemoryError

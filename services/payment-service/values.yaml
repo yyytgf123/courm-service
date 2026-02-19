@@ -76,9 +76,7 @@ otel:
   javaAgent:
     jarPath: "/otel/opentelemetry-javaagent.jar"
 
-javaToolOptions: ""   # 필요하면 "-Xms256m -Xmx512m" 같은거 여기에
-
-## Istio DestinationRule 
+## Istio DestinationRule
 ## (Circuit Breaker)
 destinationRule:
   enabled: true
