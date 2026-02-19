@@ -48,7 +48,7 @@ redis:
   port: 6379
   username: "app-user"
   password: "NewStrongPass123!"
-  sslEnabled: true
+  sslEnabled: false
 
 # redis (legacy JVM option)
 javaToolOptions: >-
@@ -57,8 +57,7 @@ javaToolOptions: >-
   -Dspring.data.redis.port=6379
   -Dspring.data.redis.username=app-user
   -Dspring.data.redis.password=NewStrongPass123!
-  -Dspring.data.redis.ssl.enabled=true
-  -Dspring.datasource.hikari.maximum-pool-size=20
+-Dspring.datasource.hikari.maximum-pool-size=20
   -Dspring.datasource.hikari.connection-timeout=5000
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
