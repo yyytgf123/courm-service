@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "courm-app.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "courm-app.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+data:
+  {{- with .Values.profile }}
+  SPRING_PROFILES_ACTIVE: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.logLevel }}
+  LOG_LEVEL: {{ . | quote }}
+  {{- end }}
+
+  {{- with .Values.config }}
+  {{- with .serverPort }}
+  SERVER_PORT: {{ . | quote }}
+  {{- end }}
+  {{- with .springDatasourceUrl }}
+  SPRING_DATASOURCE_URL: {{ . | quote }}
+  {{- end }}
+  {{- with .dbHost }}
+  DB_HOST: {{ . | quote }}
+  {{- end }}
+  {{- with .dbPort }}
+  DB_PORT: {{ . | quote }}
+  {{- end }}
+  {{- with .dbName }}
+  DB_NAME: {{ . | quote }}
+  {{- end }}
+  {{- with .springKafkaBootstrapServers }}
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: {{ . | quote }}
+  {{- end }}
+  {{- with .kafkaBootstrapServers }}
+  KAFKA_BOOTSTRAP_SERVERS: {{ . | quote }}
+  {{- end }}
+  {{- with .userServiceUrl }}
+  USER_SERVICE_URL: {{ . | quote }}
+  {{- end }}
+  {{- with .productServiceUrl }}
+  PRODUCT_SERVICE_URL: {{ . | quote }}
+  {{- end }}
+  {{- with .awsCognitoRegion }}
+  AWS_COGNITO_REGION: {{ . | quote }}
+  {{- end }}
+  {{- with .awsCognitoUserPoolId }}
+  AWS_COGNITO_USER_POOL_ID: {{ . | quote }}
+  {{- end }}
+  {{- with .awsCognitoJwkSetUri }}
+  AWS_COGNITO_JWK_SET_URI: {{ . | quote }}
+  COGNITO_JWK_SET_URI: {{ . | quote }}
+  {{- end }}
+  {{- with .awsCognitoClientId }}
+  AWS_COGNITO_CLIENT_ID: {{ . | quote }}
+  {{- end }}
+  {{- end }}
+
+  {{- with .Values.redis }}
+  {{- with .host }}
+  REDIS_HOST: {{ . | quote }}
+  SPRING_REDIS_HOST: {{ . | quote }}
+  SPRING_DATA_REDIS_HOST: {{ . | quote }}
+  {{- end }}
+  {{- with .port }}
+  REDIS_PORT: {{ . | quote }}
+  SPRING_DATA_REDIS_PORT: {{ . | quote }}
+  {{- end }}
+  {{- end }}
+
+  {{- with .Values.kafka }}
+  {{- with .bootstrapServers }}
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: {{ . | quote }}
+  KAFKA_BOOTSTRAP_SERVERS: {{ . | quote }}
+  {{- end }}
+  {{- with .consumerGroupId }}
+  SPRING_KAFKA_CONSUMER_GROUP_ID: {{ . | quote }}
+  {{- end }}
+  {{- with .orderTopic }}
+  KAFKA_ORDER_TOPIC: {{ . | quote }}
+  {{- end }}
+  {{- with .paymentTopic }}
+  KAFKA_PAYMENT_TOPIC: {{ . | quote }}
+  {{- end }}
+  {{- with .productTopic }}
+  KAFKA_PRODUCT_TOPIC: {{ . | quote }}
+  {{- end }}
+  {{- end }}
+
+  {{- with .Values.product }}
+  {{- with .serviceUrl }}
+  PRODUCT_SERVICE_URL: {{ . | quote }}
+  {{- end }}
+  {{- end }}
+
+  {{- with .Values.cognito }}
+  {{- with .jwkSetUri }}
+  COGNITO_JWK_SET_URI: {{ . | quote }}
+  AWS_COGNITO_JWK_SET_URI: {{ . | quote }}
+  {{- end }}
+  {{- end }}
+
