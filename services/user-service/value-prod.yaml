@@ -36,6 +36,15 @@ route:
   hostnames:
     - "user.example.com"
 
+## Blue/Green 전략 - 운영 환경
+# prod는 충분한 검증 후 수동 promote (안전 우선)
+strategy:
+  blueGreen:
+    autoPromotionEnabled: false   # 수동 promote 필요
+    scaleDownDelaySeconds: 300
+    previewHeader:
+      enabled: true               # X-Preview 헤더로 신버전 테스트 가능
+
 # Tempo
 otel:
   enabled: true

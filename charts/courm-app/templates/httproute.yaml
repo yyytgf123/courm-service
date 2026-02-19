@@ -24,6 +24,21 @@ spec:
   {{- end }}
 
   rules:
+    {{- if .Values.strategy.blueGreen.previewHeader.enabled }}
+    # [preview 라우팅] 지정한 헤더가 있는 요청은 신버전(preview)으로 전달
+    # 예: curl -H "X-Preview: true" https://...
+    - matches:
+        - path:
+            type: {{ default "PathPrefix" .Values.route.pathType }}
+            value: {{ required "route.path is required" .Values.route.path | quote }}
+          headers:
+            - name: {{ .Values.strategy.blueGreen.previewHeader.name | default "X-Preview" | quote }}
+              value: {{ .Values.strategy.blueGreen.previewHeader.value | default "true" | quote }}
+      backendRefs:
+        - name: {{ include "courm-app.fullname" . }}-preview
+          port: {{ default 80 .Values.service.port }}
+    {{- end }}
+    # [일반 라우팅] 헤더 없는 일반 요청은 구버전(active)으로 전달
     - matches:
         - path:
             type: {{ default "PathPrefix" .Values.route.pathType }}

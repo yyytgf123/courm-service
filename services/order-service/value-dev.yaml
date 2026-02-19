@@ -29,6 +29,15 @@ route:
   hostnames:
     - "order-dev.example.com"
 
+## Blue/Green 전략 - 개발 환경
+strategy:
+  blueGreen:
+    autoPromotionEnabled: true
+    autoPromotionSeconds: 60
+    scaleDownDelaySeconds: 60
+    previewHeader:
+      enabled: true
+
 # Tempo
 otel:
   enabled: true
