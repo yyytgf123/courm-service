@@ -3,7 +3,7 @@ config:
   springKafkaBootstrapServers: "courm-kafka.courm-kafka.svc.cluster.local:9092"
   kafkaBootstrapServers: "courm-kafka.courm-kafka.svc.cluster.local:9092"
   serverPort: "8080"
-  springDatasourceUrl: "jdbc:postgresql://postgresql:5432/ecommerce"
+  springDatasourceUrl: "jdbc:postgresql://postgres:5432/ecommerce"
   awsCognitoRegion: "ap-northeast-2"
   awsCognitoUserPoolId: "ap-northeast-2_HmqfrWP3T"
   awsCognitoJwkSetUri: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_HmqfrWP3T/.well-known/jwks.json"
