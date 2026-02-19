@@ -57,7 +57,7 @@ redis:
   port: 6379
   username: default
   password: NewStrongPass123!
-  sslEnabled: true
+  sslEnabled: false
 
 # redis (legacy JVM option)
 javaToolOptions: >-
