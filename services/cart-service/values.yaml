@@ -36,7 +36,7 @@ redis:
 # Internal Service URLs 여기 주석
 # ------------------------
 product:
-  serviceUrl: http://product:8080
+  serviceUrl: http://product-service-dev-courm-app-active
 
 
 
