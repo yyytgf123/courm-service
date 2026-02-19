@@ -57,7 +57,7 @@ javaToolOptions: >-
   -Dspring.data.redis.port=6379
   -Dspring.data.redis.username=app-user
   -Dspring.data.redis.password=NewStrongPass123!
--Dspring.datasource.hikari.maximum-pool-size=20
+  -Dspring.datasource.hikari.maximum-pool-size=20
   -Dspring.datasource.hikari.connection-timeout=5000
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0

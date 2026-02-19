@@ -68,6 +68,15 @@ data:
   REDIS_PORT: {{ . | quote }}
   SPRING_DATA_REDIS_PORT: {{ . | quote }}
   {{- end }}
+  {{- if hasKey . "sslEnabled" }}
+  SPRING_DATA_REDIS_SSL_ENABLED: {{ .sslEnabled | quote }}
+  {{- end }}
+  {{- with .username }}
+  SPRING_DATA_REDIS_USERNAME: {{ . | quote }}
+  {{- end }}
+  {{- with .password }}
+  SPRING_DATA_REDIS_PASSWORD: {{ . | quote }}
+  {{- end }}
   {{- end }}
 
   {{- with .Values.kafka }}
