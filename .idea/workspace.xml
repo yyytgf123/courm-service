@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/cart-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/cart-service/values.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

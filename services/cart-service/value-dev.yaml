@@ -17,6 +17,7 @@ service:
 # Redis (Dev)
 # ------------------------
 redis:
+  # Redis 설정은 redis.* 값으로만 주입하고 JAVA_TOOL_OPTIONS의 -Dspring.data.redis.*는 사용하지 않음
   host: local-redis.dev.svc.cluster.local
   port: 6379
   username: "app-user"
