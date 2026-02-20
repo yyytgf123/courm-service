@@ -12,6 +12,9 @@ spec:
     name: {{ include "user-service.fullname" . }}
   minReplicas: {{ .Values.hpa.minReplicas | default 2 }}
   maxReplicas: {{ .Values.hpa.maxReplicas | default 10 }}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.hpa.behavior.scaleDown.stabilizationWindowSeconds | default 60 }}
   metrics:
   - type: Resource
     resource:

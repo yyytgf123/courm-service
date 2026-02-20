@@ -16,7 +16,7 @@ hpa:
   targetCPU: 50
   behavior:
     scaleDown:
-      stabilizationWindowSeconds: 300
+      stabilizationWindowSeconds: 60
 
 # ------------------------
 # Image
