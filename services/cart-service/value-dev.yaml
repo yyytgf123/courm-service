@@ -20,8 +20,8 @@ redis:
   # Redis 설정은 redis.* 값으로만 주입하고 JAVA_TOOL_OPTIONS의 -Dspring.data.redis.*는 사용하지 않음
   host: master.courm-redis-prod.epf9hv.apn2.cache.amazonaws.com
   port: 6379
-  username: "app-user"
-  password: "NewStrongPass123!"
+  username: "redis-user-1"
+  password: "newstrongpass123!"
   sslEnabled: true
 
 # ------------------------

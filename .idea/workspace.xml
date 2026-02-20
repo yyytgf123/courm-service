@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/product-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/product-service/values.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="65" />
+    <option name="cachedIndexableFilesCount" value="74" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -132,6 +133,7 @@
       <workItem from="1771399454212" duration="140000" />
       <workItem from="1771406553538" duration="693000" />
       <workItem from="1771411155584" duration="12779000" />
+      <workItem from="1771499235453" duration="5756000" />
     </task>
     <servers />
   </component>
