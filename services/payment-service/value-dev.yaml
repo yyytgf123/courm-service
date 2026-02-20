@@ -7,6 +7,10 @@ service:
 env:
   - name: SPRING_PROFILES_ACTIVE
     value: dev
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "3"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "1"
 
 config:
   springDatasourceUrl: "jdbc:postgresql://courm-rds-order-prod.c9iosg68k3c4.ap-northeast-2.rds.amazonaws.com:5432/courm_order"
@@ -54,3 +58,6 @@ otel:
   resourceAttributes: "deployment.environment=dev,service.version=1.0.0"
   sampler: "parentbased_traceidratio"
   samplerArg: "1.0"   # 처음엔 100%로 켜서 잘 들어오는지 확인
+
+hpa:
+  maxReplicas: 3
