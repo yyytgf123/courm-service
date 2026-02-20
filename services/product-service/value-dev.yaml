@@ -29,6 +29,10 @@ resources:
     memory: "512Mi"
     cpu: "500m"
 
+
+nodeSelector:
+  role: service-app
+
 ## Gateway API - Development
 route:
   enabled: true
