@@ -75,7 +75,7 @@ metrics:
       release: kube-prometheus-stack
 
 otel:
-  enabled: false
+  enabled: true
   serviceName: order-service
   otlpEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4318"
   otlpProtocol: "http/protobuf"
