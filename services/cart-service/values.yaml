@@ -118,7 +118,7 @@ metrics:
 otel:
   enabled: true
   serviceName: cart-service
-  otlpEndpoint: "http://loki-stack.logging.svc.cluster.local:4318" # Assuming we will deploy collector there or use simpler setup
+  otlpEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4318" # Assuming we will deploy collector there or use simpler setup
   otlpProtocol: "http/protobuf"
   tracesExporter: "otlp"
   metricsExporter: "none"
@@ -129,7 +129,7 @@ otel:
 javaToolOptions: >-
   -javaagent:/otel/opentelemetry-javaagent.jar
   -Dotel.resource.attributes=service.name=cart-service
-  -Dotel.exporter.otlp.endpoint=http://loki-stack.logging.svc.cluster.local:4318
+  -Dotel.exporter.otlp.endpoint=http://otel-collector.monitoring.svc.cluster.local:4318
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
