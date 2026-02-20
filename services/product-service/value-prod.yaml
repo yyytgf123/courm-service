@@ -55,8 +55,8 @@ otel:
 redis:
   host: master.courm-redis-prod.epf9hv.apn2.cache.amazonaws.com
   port: 6379
-  username: app-user
-  password: NewStrongPass123!
+  username: "app-user"
+  password: "AppUser!20260220"
   sslEnabled: true
 
 # redis (legacy JVM option)

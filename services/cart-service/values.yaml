@@ -29,7 +29,7 @@ redis:
   host: master.courm-redis-prod.epf9hv.apn2.cache.amazonaws.com
   port: 6379
   username: "app-user"
-  password: "NewStrongPass123!"
+  password: "AppUser!20260220"
   sslEnabled: true
 
 # ------------------------
