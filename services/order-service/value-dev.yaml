@@ -41,6 +41,14 @@ strategy:
 config:
   userServiceUrl: http://user-service-dev-courm-app-active
   productServiceUrl: http://product-service-dev-courm-app-active
+  springDatasourceUrl: "jdbc:postgresql://courm-rds-order-prod.c9iosg68k3c4.ap-northeast-2.rds.amazonaws.com:5432/courm_order"
+  dbHost: "courm-rds-order-prod.c9iosg68k3c4.ap-northeast-2.rds.amazonaws.com"
+  dbPort: "5432"
+  dbName: "courm_order"
+
+secret:
+  dbUsername: "courmadmin"
+  dbPassword: "courmadmin1234!"
 
 # Tempo
 otel:
