@@ -19,8 +19,8 @@ rollout:
 
 resources:
   requests:
-    cpu: "200m"
-    memory: "512Mi"
+    cpu: "1"
+    memory: "1Gi"
   limits:
     cpu: "1"
     memory: "1Gi"
@@ -50,3 +50,10 @@ otel:
   resourceAttributes: "deployment.environment=prod,service.version=1.0.0"
   sampler: "parentbased_traceidratio"
   samplerArg: "0.1"   # 운영은 보통 10% 같은 식으로 낮춤
+
+## HPA (운영 Auto-Scaling)
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPU: 50

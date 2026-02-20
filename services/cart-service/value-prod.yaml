@@ -15,8 +15,8 @@ rollout:
 
 resources:
   requests:
-    cpu: "200m"
-    memory: "512Mi"
+    cpu: "1"
+    memory: "1Gi"
   limits:
     cpu: "1"
     memory: "1Gi"
@@ -59,3 +59,11 @@ redis:
 
 product:
   serviceUrl: http://product-service-prod-courm-app-active
+
+
+## HPA (운영 Auto-Scaling)
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPU: 50

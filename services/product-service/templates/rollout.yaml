@@ -21,6 +21,13 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: otel-agent-init
+          image: busybox:1.35
+          command: ["wget", "-O", "/otel/opentelemetry-javaagent.jar", "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar"]
+          volumeMounts:
+            - name: otel-agent
+              mountPath: /otel
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -29,17 +36,27 @@ spec:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
-          envFrom:
-            - configMapRef:
-                name: {{ include "product-service.fullname" . }}-config
-            - secretRef:
-                name: {{ include "product-service.fullname" . }}-redis
-            - secretRef:
-                name: {{ include "product-service.fullname" . }}-secret
+          {{- if .Values.env }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          {{- end }}
+            {{- if .Values.otel.enabled }}
+            - name: OTEL_JAVAAGENT_ENABLED
+              value: "true"
+            - name: OTEL_TRACES_EXPORTER
+              value: {{ .Values.otel.tracesExporter }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.otel.otlpEndpoint }}
+            - name: OTEL_SERVICE_NAME
+              value: {{ .Values.otel.serviceName }}
+            {{- end }}
           {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
+          volumeMounts:
+            - name: otel-agent
+              mountPath: /otel
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -52,6 +69,9 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: otel-agent
+          emptyDir: {}
   {{- if .Values.strategy }}
   {{- if eq .Values.strategy.type "blueGreen" }}
   strategy:

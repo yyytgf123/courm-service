@@ -41,7 +41,7 @@ service:
 
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-product
-  tag: "4-365b3684"
+  tag: "8-6c165693"
 
 replicas: 1
 
@@ -52,16 +52,23 @@ strategy:
     autoPromotionEnabled: true
     scaleDownDelaySeconds: 300
 
-## Resource limits (t3.medium 환경에서의 안정적 가동을 위해 상향)
+## Resource limits (Guaranteed QoS: requests = limits → Evict 방지)
 resources:
   requests:
-    memory: "768Mi"
-    cpu: "500m"
+    memory: "1Gi"
+    cpu: "1"
   limits:
     memory: "1Gi"
     cpu: "1"
 
 revisionHistoryLimit: 3
+
+## HPA (Auto-Scaling)
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPU: 50
 
 ## Monitoring
 metrics:
@@ -75,7 +82,7 @@ metrics:
 otel:
   enabled: true
   serviceName: product-service
-  otlpEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4318"
+  otlpEndpoint: "http://loki-stack.logging.svc.cluster.local:4318" # Assuming we will deploy collector there or use simpler setup
   otlpProtocol: "http/protobuf"
   tracesExporter: "otlp"
   metricsExporter: "none"
@@ -85,3 +92,13 @@ otel:
 
 podAnnotations:
   sidecar.istio.io/inject: "false"
+
+# JVM 힙 메모리 최적화 옵션
+javaToolOptions: >-
+  -javaagent:/otel/opentelemetry-javaagent.jar
+  -Dotel.resource.attributes=service.name=product-service
+  -Dotel.exporter.otlp.endpoint=http://loki-stack.logging.svc.cluster.local:4318
+  -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+  -XX:+UseContainerSupport
+  -XX:MaxRAMPercentage=75.0
+  -XX:+ExitOnOutOfMemoryError

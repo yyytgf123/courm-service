@@ -19,8 +19,8 @@ rollout:
 
 resources:
   requests:
-    cpu: "500m"
-    memory: "768Mi"
+    cpu: "1"
+    memory: "1Gi"
   limits:
     cpu: "1"
     memory: "1Gi"
@@ -67,3 +67,10 @@ javaToolOptions: >-
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
   -XX:+ExitOnOutOfMemoryError
+
+## HPA (운영 Auto-Scaling)
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPU: 50
