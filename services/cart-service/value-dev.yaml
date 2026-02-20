@@ -52,6 +52,10 @@ strategy:
     previewHeader:
       enabled: true
 
+
+nodeSelector:
+  role: service-app
+
 # ------------------------
 # Gateway API - Development
 # ------------------------

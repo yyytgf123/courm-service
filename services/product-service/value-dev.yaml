@@ -30,6 +30,10 @@ resources:
     memory: "1Gi"
 
 
+
+nodeSelector:
+  role: service-app
+
 ## Gateway API - Development
 route:
   enabled: true
