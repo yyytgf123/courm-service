@@ -5,15 +5,15 @@ config:
   userServiceUrl: "http://user:8080"
   productServiceUrl: "http://product:8080"
   serverPort: "8080"
-  springDatasourceUrl: "jdbc:postgresql://postgres:5432/order_db"
+  springDatasourceUrl: "jdbc:postgresql://courm-rds-order-prod.c9iosg68k3c4.ap-northeast-2.rds.amazonaws.com:5432/courm_order"
   awsCognitoJwkSetUri: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_HmqfrWP3T/.well-known/jwks.json"
-  dbHost: "postgres"
+  dbHost: "courm-rds-order-prod.c9iosg68k3c4.ap-northeast-2.rds.amazonaws.com"
   dbPort: "5432"
-  dbName: "order_db"
+  dbName: "courm_order"
 
 secret:
-  dbUsername: "postgres"
-  dbPassword: "postgres"
+  dbUsername: "courmadmin"
+  dbPassword: "courmadmin1234!"
 
 imagePullSecrets:
   - name: ecr-secret
