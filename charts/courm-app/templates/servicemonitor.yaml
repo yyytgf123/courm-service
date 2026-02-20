@@ -20,4 +20,6 @@ spec:
       interval: {{ .Values.metrics.serviceMonitor.interval | default "15s" | quote }}
       scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout | default "10s" | quote }}
       scheme: {{ .Values.metrics.serviceMonitor.scheme | default "http" | quote }}
+      honorLabels: true
+      enableHttp2: false
 {{- end }}

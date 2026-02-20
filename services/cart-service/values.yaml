@@ -104,7 +104,7 @@ metrics:
 # OpenTelemetry (Tempo)
 # ------------------------
 otel:
-  enabled: false
+  enabled: true
   serviceName: cart-service
   otlpEndpoint: "http://otel-collector.monitoring.svc.cluster.local:4318"
   otlpProtocol: "http/protobuf"
