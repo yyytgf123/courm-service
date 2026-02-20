@@ -80,4 +80,4 @@ javaToolOptions: >-
   -XX:+ExitOnOutOfMemoryError
 
 hpa:
-  maxReplicas: 3
+  maxReplicas: 5
