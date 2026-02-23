@@ -4,14 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="" />
+    <list default="true" id="a81a79f2-68fe-49f6-a14b-abb278d09564" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/templates/hpa.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/templates/hpa.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/value-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/value-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/value-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/value-prod.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/values.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="74" />
+    <option name="cachedIndexableFilesCount" value="79" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -131,6 +137,9 @@
       <workItem from="1771406553538" duration="693000" />
       <workItem from="1771411155584" duration="12779000" />
       <workItem from="1771499235453" duration="5756000" />
+      <workItem from="1771643806945" duration="2739000" />
+      <workItem from="1771657631527" duration="2114000" />
+      <workItem from="1771767735048" duration="13000" />
     </task>
     <servers />
   </component>

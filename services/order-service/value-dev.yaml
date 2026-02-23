@@ -76,10 +76,10 @@ redis:
 # redis (legacy JVM option)
 javaToolOptions: >-
   -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
-  -Dspring.data.redis.host=local-redis.dev.svc.cluster.local
-  -Dspring.data.redis.port=6379
-  -Dspring.data.redis.username=app-user
-  -Dspring.data.redis.password=NewStrongPass123!
+#  -Dspring.data.redis.host=local-redis.dev.svc.cluster.local
+#  -Dspring.data.redis.port=6379
+#  -Dspring.data.redis.username=app-user
+#  -Dspring.data.redis.password=NewStrongPass123!
   -Dspring.datasource.hikari.maximum-pool-size=3
   -Dspring.datasource.hikari.minimum-idle=1
   -Dspring.datasource.hikari.connection-timeout=5000
@@ -88,4 +88,41 @@ javaToolOptions: >-
   -XX:+ExitOnOutOfMemoryError
 
 hpa:
+  enabled: true
+  minReplicas: 1
   maxReplicas: 3
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+      selectPolicy: Max
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 30
+          periodSeconds: 60
+      selectPolicy: Max
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: External
+      external:
+        metric:
+          name: kafka_consumergroup_lag_sum
+          selector:
+            matchLabels:
+              consumergroup: order-service-group
+        target:
+          type: Value
+          value: "1000"

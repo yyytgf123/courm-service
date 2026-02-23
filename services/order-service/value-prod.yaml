@@ -65,3 +65,38 @@ hpa:
   minReplicas: 1
   maxReplicas: 3
   targetCPU: 50
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+      selectPolicy: Max
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 30
+          periodSeconds: 60
+      selectPolicy: Max
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: External
+      external:
+        metric:
+          name: kafka_consumergroup_lag_sum
+          selector:
+            matchLabels:
+              consumergroup: order-service-group
+        target:
+          type: Value
+          value: "1000"

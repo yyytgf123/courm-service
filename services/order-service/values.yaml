@@ -68,16 +68,6 @@ resources:
 
 revisionHistoryLimit: 3
 
-## HPA (Auto-Scaling)
-hpa:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPU: 50
-  behavior:
-    scaleDown:
-      stabilizationWindowSeconds: 60
-
 ## Monitoring
 metrics:
   enabled: true
@@ -105,3 +95,26 @@ javaToolOptions: >-
   -XX:+UseContainerSupport
   -XX:MaxRAMPercentage=75.0
   -XX:+ExitOnOutOfMemoryError
+
+hpa:
+  maxReplicas: 3
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 60
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: External
+      external:
+        metric:
+          name: kafka_consumergroup_lag_sum
+          selector:
+            matchLabels:
+              consumergroup: order-service-group
+        target:
+          type: Value
+          value: "1000"
