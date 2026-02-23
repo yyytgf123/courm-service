@@ -23,7 +23,7 @@ hpa:
 # ------------------------
 image:
   repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-cart
-  tag: "8-6c165693"
+  tag: "9-37ee6046"
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
