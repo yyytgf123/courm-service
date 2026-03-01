@@ -9,6 +9,14 @@ service2:
 
 env:
   - name: SPRING_PROFILES_ACTIVE
+    value: dev
+  - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+    value: "3"
+  - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+    value: "1"
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
     value: prod
 
 replicaCount: 1

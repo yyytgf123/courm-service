@@ -1,0 +1,151 @@
+# ============================================================
+# Order Service - Standalone Pod (Prod Namespace)
+# 목적: 초기 RSS 측정 → Heap / Non-Heap 영역 분리 → Xms/Xmx 산정
+#
+# [배포]
+#   kubectl apply -f order-standalone-prod.yaml -n prod
+#
+# [측정 명령]
+#
+# 1) NMT - Heap / Non-Heap 전체 breakdown
+#    kubectl exec -n prod order-standalone -- jcmd 1 VM.native_memory summary
+#
+# 2) RSS (OS 실제 점유 메모리)
+#    kubectl exec -n prod order-standalone -- cat /proc/1/status | grep -E "VmRSS|VmPeak"
+#
+# 3) Heap 상태
+#    kubectl exec -n prod order-standalone -- jcmd 1 GC.heap_info
+#
+# 4) Actuator JVM 메트릭 (앱 기동 후)
+#    kubectl port-forward pod/order-standalone 8080:8080 -n prod
+#    curl http://localhost:8080/actuator/metrics/jvm.memory.used
+#    curl http://localhost:8080/actuator/metrics/jvm.memory.committed
+#    curl http://localhost:8080/actuator/prometheus | grep jvm_memory
+#
+# [측정 흐름]
+#   1. 앱 기동 완료 대기 (kubectl logs -f -n prod order-standalone)
+#   2. jcmd NMT summary → Heap committed / Non-Heap(Code, Class, Thread 등) 확인
+#   3. /proc/1/status VmRSS → 실제 OS RSS 확인
+#   4. Heap committed + Non-Heap committed + overhead 합산 → Xmx 결정
+#   5. 초기 Heap used 수치 → Xms 결정 (보통 Xmx의 50~75%)
+#
+# [정리]
+#   kubectl delete pod order-standalone -n prod
+# ============================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: order-standalone
+  namespace: prod
+  labels:
+    app: order-standalone
+    purpose: heap-sizing
+spec:
+  restartPolicy: Never
+  imagePullSecrets:
+    - name: ecr-secret
+
+  # 운영과 동일하게 OTEL agent 포함 (agent 메모리 오버헤드까지 측정)
+  initContainers:
+    - name: otel-agent-init
+      image: curlimages/curl:latest
+      command:
+        - curl
+        - -fsSL
+        - -o
+        - /otel/opentelemetry-javaagent.jar
+        - https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+      volumeMounts:
+        - name: otel-agent
+          mountPath: /otel
+
+  containers:
+    - name: order-service
+      image: 291176052382.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-order:13-f31de21a
+      imagePullPolicy: IfNotPresent
+
+      ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+
+      env:
+        # --- Kafka ---
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "local-kafka:9092"
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "local-kafka:9092"
+
+        # --- 서비스 URL (prod) ---
+        - name: USER_SERVICE_URL
+          value: "http://user-service-prod-courm-app-active"
+        - name: PRODUCT_SERVICE_URL
+          value: "http://product-service-prod-courm-app-active"
+
+        # --- DB (prod RDS) ---
+        - name: SERVER_PORT
+          value: "8080"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://local-postgres:5432/courm_order"
+        - name: DB_HOST
+          value: "local-postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: "courm_order"
+        - name: DB_USERNAME
+          value: "courmadmin"
+        - name: DB_PASSWORD
+          value: "courmadmin1234!"
+
+        # --- Cognito ---
+        - name: AWS_COGNITO_JWK_SET_URI
+          value: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_HmqfrWP3T/.well-known/jwks.json"
+
+        # --- Spring Profile ---
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+
+        # --- Actuator: metrics 추가 노출 ---
+        - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+          value: "health,info,prometheus,metrics"
+
+        # --- OTEL ---
+        - name: OTEL_TRACES_EXPORTER
+          value: "otlp"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-collector.monitoring.svc.cluster.local:4318"
+        - name: OTEL_SERVICE_NAME
+          value: "order-service"
+
+        # ── JVM 옵션 ──
+        # NativeMemoryTracking=summary → jcmd으로 Heap/Non-Heap 상세 breakdown 확인
+        # Xms/Xmx 미지정 → MaxRAMPercentage 기반으로 JVM이 자동 산정한 초기값 측정
+        - name: JAVA_TOOL_OPTIONS
+          value: >-
+            -javaagent:/otel/opentelemetry-javaagent.jar
+            -Dotel.resource.attributes=service.name=order-service,deployment.environment=prod
+            -Dotel.exporter.otlp.endpoint=http://otel-collector.monitoring.svc.cluster.local:4318
+            -Dspring.kafka.bootstrap-servers=local-kafka:9092
+            -XX:+UseContainerSupport
+            -XX:MaxRAMPercentage=75.0
+            -XX:+ExitOnOutOfMemoryError
+            -XX:NativeMemoryTracking=summary
+
+      # 운영과 동일한 리소스 (Guaranteed QoS)
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: "1"
+        limits:
+          memory: "1Gi"
+          cpu: "1"
+
+      volumeMounts:
+        - name: otel-agent
+          mountPath: /otel
+
+  volumes:
+    - name: otel-agent
+      emptyDir: {}
+

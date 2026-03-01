@@ -1,0 +1,178 @@
+# ============================================================
+# Order Service - Memory Analysis Debug Pod
+# 목적: Heap / Non-Heap 메모리 할당량 측정
+#
+# [배포]
+#   kubectl apply -f order-memory-debug-pod.yaml -n dev
+#
+# [메모리 확인 방법]
+#
+# 1) NMT (Native Memory Tracking) - Non-Heap 전체 breakdown
+#    kubectl exec -n dev order-memory-debug -- jcmd 1 VM.native_memory summary
+#
+# 2) Heap 상세 (Heap dump)
+#    kubectl exec -n dev order-memory-debug -- jcmd 1 GC.heap_info
+#
+# 3) Actuator - JVM 메트릭 (Heap/Non-Heap 수치)
+#    kubectl port-forward pod/order-memory-debug 8080:8080 -n dev
+#    curl http://localhost:8080/actuator/metrics/jvm.memory.used
+#    curl http://localhost:8080/actuator/metrics/jvm.memory.max
+#    curl http://localhost:8080/actuator/prometheus | grep jvm_memory
+#
+# 4) JMX (VisualVM / JConsole)
+#    kubectl port-forward pod/order-memory-debug 9999:9999 -n dev
+#    → VisualVM에서 localhost:9999 연결
+#
+# [정리]
+#   kubectl delete pod order-memory-debug -n dev
+# ============================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: order-memory-debug
+  namespace: dev
+  labels:
+    app: order-memory-debug
+    purpose: memory-analysis
+spec:
+  restartPolicy: Never      # OOM 등으로 종료돼도 재시작 안 함 (측정값 보존)
+  imagePullSecrets:
+    - name: ecr-secret
+
+  # ── OTEL agent 를 emptyDir 에 다운로드 (rollout 과 동일한 방식) ──
+  initContainers:
+    - name: otel-agent-init
+      image: busybox:1.35
+      command:
+        - wget
+        - -O
+        - /otel/opentelemetry-javaagent.jar
+        - https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+      volumeMounts:
+        - name: otel-agent
+          mountPath: /otel
+
+  containers:
+    - name: order-service
+      # 운영/dev 환경과 동일한 이미지 사용 (태그는 측정 대상에 맞게 변경)
+      image: 291176052382.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-order:13-f31de21a
+      imagePullPolicy: IfNotPresent
+
+      ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: jmx
+          containerPort: 9999
+          protocol: TCP
+
+      # ── 환경변수: dev ConfigMap 과 동일한 값 인라인 ──
+      env:
+        # --- Kafka ---
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "courm-kafka.courm-kafka.svc.cluster.local:9092"
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "courm-kafka.courm-kafka.svc.cluster.local:9092"
+
+        # --- 서비스 URL ---
+        - name: USER_SERVICE_URL
+          value: "http://user-service-dev-courm-app-active"
+        - name: PRODUCT_SERVICE_URL
+          value: "http://product-service-dev-courm-app-active"
+
+        # --- DB (RDS) ---
+        - name: SERVER_PORT
+          value: "8080"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://courm-rds-order-prod.c9iosg68k3c4.ap-northeast-2.rds.amazonaws.com:5432/courm_order"
+        - name: DB_HOST
+          value: "courm-rds-order-prod.c9iosg68k3c4.ap-northeast-2.rds.amazonaws.com"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: "courm_order"
+        - name: DB_USERNAME
+          value: "courmadmin"
+        - name: DB_PASSWORD
+          value: "courmadmin1234!"
+
+        # --- Cognito ---
+        - name: AWS_COGNITO_JWK_SET_URI
+          value: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_HmqfrWP3T/.well-known/jwks.json"
+
+        # --- Redis ---
+        - name: SPRING_DATA_REDIS_HOST
+          value: "local-redis.dev.svc.cluster.local"
+        - name: SPRING_DATA_REDIS_PORT
+          value: "6379"
+        - name: SPRING_DATA_REDIS_USERNAME
+          value: "app-user"
+        - name: SPRING_DATA_REDIS_PASSWORD
+          value: "NewStrongPass123!"
+        - name: SPRING_DATA_REDIS_SSL_ENABLED
+          value: "false"
+
+        # --- Hikari (dev 와 동일) ---
+        - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+          value: "3"
+        - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+          value: "1"
+
+        # --- Spring Profile ---
+        - name: SPRING_PROFILES_ACTIVE
+          value: "dev"
+
+        # --- Actuator: metrics 엔드포인트 추가 노출 (기존 health,info,prometheus + metrics) ---
+        - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+          value: "health,info,prometheus,metrics"
+
+        # --- OTEL (rollout 과 동일) ---
+        - name: OTEL_JAVAAGENT_ENABLED
+          value: "true"
+        - name: OTEL_TRACES_EXPORTER
+          value: "otlp"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-collector.monitoring.svc.cluster.local:4318"
+        - name: OTEL_SERVICE_NAME
+          value: "order-service"
+
+        # ── JVM 옵션 (메모리 분석 플래그 추가) ──
+        # JAVA_TOOL_OPTIONS 은 JVM 기동 시 자동 적용됨
+        - name: JAVA_TOOL_OPTIONS
+          value: >-
+            -javaagent:/otel/opentelemetry-javaagent.jar
+            -Dotel.resource.attributes=service.name=order-service,deployment.environment=dev
+            -Dotel.exporter.otlp.endpoint=http://otel-collector.monitoring.svc.cluster.local:4318
+            -Dspring.kafka.bootstrap-servers=courm-kafka.courm-kafka.svc.cluster.local:9092
+            -Dspring.datasource.hikari.maximum-pool-size=3
+            -Dspring.datasource.hikari.minimum-idle=1
+            -Dspring.datasource.hikari.connection-timeout=5000
+            -XX:+UseContainerSupport
+            -XX:MaxRAMPercentage=75.0
+            -XX:+ExitOnOutOfMemoryError
+            -XX:NativeMemoryTracking=summary
+            -Dcom.sun.management.jmxremote
+            -Dcom.sun.management.jmxremote.port=9999
+            -Dcom.sun.management.jmxremote.rmi.port=9999
+            -Dcom.sun.management.jmxremote.ssl=false
+            -Dcom.sun.management.jmxremote.authenticate=false
+            -Djava.rmi.server.hostname=127.0.0.1
+
+      # ── 리소스: dev 값과 동일 (Guaranteed QoS) ──
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: "1"
+        limits:
+          memory: "1Gi"
+          cpu: "1"
+
+      volumeMounts:
+        - name: otel-agent
+          mountPath: /otel
+
+  volumes:
+    - name: otel-agent
+      emptyDir: {}
+
+  # nodeSelector 는 실제 클러스터(dev/prod)용 — 로컬에서는 제거

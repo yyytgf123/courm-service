@@ -46,7 +46,7 @@ service:
   type: ClusterIP
 
 image:
-  repository: 900808296075.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-order
+  repository: 291176052382.dkr.ecr.ap-northeast-2.amazonaws.com/goorm-order
   tag: "10-f3b69a70"
 
 replicas: 1
