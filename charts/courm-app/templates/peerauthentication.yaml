@@ -1,0 +1,14 @@
+{{- if .Values.istio.peerAuth.enabled }}
+# ── namespace 내 모든 pod 간 통신을 mTLS STRICT으로 강제 ──────────────
+# workloadSelector 없이 namespace-level로 적용
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "courm-app.labels" . | nindent 4 }}
+spec:
+  mtls:
+    mode: {{ .Values.istio.peerAuth.mode | default "STRICT" }}
+{{- end }}

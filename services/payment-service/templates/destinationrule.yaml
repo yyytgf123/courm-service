@@ -1,14 +1,13 @@
-{{- if .Values.destinationRule.enabled -}}
-# ── Active 서비스 DestinationRule ────────────────────────────────────
+{{- if .Values.destinationRule.enabled }}
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: {{ include "courm-app.fullname" . }}-active
+  name: {{ .Release.Name }}-active
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "courm-app.labels" . | nindent 4 }}
+    app: {{ .Chart.Name }}
 spec:
-  host: {{ include "courm-app.fullname" . }}-active
+  host: {{ .Release.Name }}-active
   trafficPolicy:
     loadBalancer:
       simple: {{ .Values.destinationRule.loadBalancer | default "ROUND_ROBIN" }}
@@ -21,8 +20,6 @@ spec:
         http1MaxPendingRequests: {{ .Values.destinationRule.connectionPool.http.http1MaxPendingRequests | default 100 }}
         http2MaxRequests: {{ .Values.destinationRule.connectionPool.http.http2MaxRequests | default 200 }}
         maxRequestsPerConnection: {{ .Values.destinationRule.connectionPool.http.maxRequestsPerConnection | default 10 }}
-        # VirtualService/HTTPRoute retry 정책과 함께 써야 의미 있음
-        # 이 값만으로는 retry가 발생하지 않음 — 동시 retry 수 상한만 제어
         maxRetries: {{ .Values.destinationRule.connectionPool.http.maxRetries | default 3 }}
     outlierDetection:
       consecutive5xxErrors: {{ .Values.destinationRule.outlierDetection.consecutive5xxErrors | default 3 }}
@@ -30,16 +27,15 @@ spec:
       baseEjectionTime: {{ .Values.destinationRule.outlierDetection.baseEjectionTime | default "30s" | quote }}
       maxEjectionPercent: {{ .Values.destinationRule.outlierDetection.maxEjectionPercent | default 50 }}
 ---
-# ── Preview 서비스 DestinationRule (active의 절반 용량) ───────────────
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: {{ include "courm-app.fullname" . }}-preview
+  name: {{ .Release.Name }}-preview
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "courm-app.labels" . | nindent 4 }}
+    app: {{ .Chart.Name }}
 spec:
-  host: {{ include "courm-app.fullname" . }}-preview
+  host: {{ .Release.Name }}-preview
   trafficPolicy:
     loadBalancer:
       simple: {{ .Values.destinationRule.loadBalancer | default "ROUND_ROBIN" }}

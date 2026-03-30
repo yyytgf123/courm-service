@@ -1,0 +1,14 @@
+{{- if .Values.istio.requestAuth.enabled }}
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: cognito-jwt
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  jwtRules:
+    - issuer: {{ .Values.istio.requestAuth.issuer | quote }}
+      jwksUri: {{ .Values.istio.requestAuth.jwksUri | quote }}
+      forwardOriginalToken: true
+{{- end }}

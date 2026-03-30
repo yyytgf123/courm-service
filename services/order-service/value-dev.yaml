@@ -89,41 +89,43 @@ javaToolOptions: >-
   -XX:+ExitOnOutOfMemoryError
 
 hpa:
+  enabled: false      # KEDA 사용으로 비활성화
+
+keda:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 3
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 0
-      policies:
-        - type: Percent
-          value: 100
-          periodSeconds: 60
-        - type: Pods
-          value: 2
-          periodSeconds: 60
-      selectPolicy: Max
-    scaleDown:
-      stabilizationWindowSeconds: 300
-      policies:
-        - type: Percent
-          value: 30
-          periodSeconds: 60
-      selectPolicy: Max
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 50
-    - type: External
-      external:
-        metric:
-          name: kafka_consumergroup_lag_sum
-          selector:
-            matchLabels:
-              consumergroup: order-service-group
-        target:
-          type: Value
-          value: "1000"
+  minReplicaCount: 1
+  maxReplicaCount: 3
+  pollingInterval: 15
+  cooldownPeriod: 300
+  consumerGroup: order-service-group
+  topic: payment-events,product-events
+  # ──────────────────────────────────────────────────────────────
+  # lagThreshold 근거 (2026-03-24 로컬 측정 기반)
+  #
+  # [측정 환경]
+  #   - PostgreSQL: 로컬 컨테이너 (네트워크 지연 <0.1ms)
+  #   - 부하: 10→30→60→100 TPS 단계 투입 (PAYMENT_FAILED 이벤트)
+  #   - 컨슈머: Python 시뮬레이터 (DB SELECT+UPDATE 실제 실행)
+  #
+  # [측정 결과]
+  #   avg_db_ms (Phase4 steady state) = 6~8ms  ← 핵심 지표
+  #   실제 lag 누적 속도:
+  #     10 TPS 투입  → +3~4 msg/s (소비 6~7 TPS, Python 오버헤드)
+  #     30 TPS 투입  → +10~12 msg/s
+  #     60 TPS 투입  → +19~22 msg/s
+  #     100 TPS 투입 → +33~35 msg/s
+  #
+  # [Spring Boot 실제 처리량 추정]
+  #   측정 avg_db_ms (로컬) ≈ 6.5ms
+  #   +RDS 네트워크(동일 AZ) ≈ +2ms = 8.5ms/message
+  #   +JPA/Spring 오버헤드   ≈ +1.5ms = 10ms/message
+  #   → 이론 처리량 = 1000ms/10ms = 100 TPS/pod
+  #   → 보수 추정 (GC·rebalance 포함): 80~100 TPS/pod
+  #
+  # [lagThreshold = 80 TPS × 5s 허용지연 = 400 → 500으로 올림림]
+  #   500 lag = 단일 pod 기준 ~5초 분량 backlog
+  #   KEDA pollingInterval=15s 내에서 감지 → 2번째 pod 투입
+  #   maxReplicas=3: 최대 300 TPS 처리 가능
+  # ──────────────────────────────────────────────────────────────
+  lagThreshold: "500"
+  activationLagThreshold: "10"

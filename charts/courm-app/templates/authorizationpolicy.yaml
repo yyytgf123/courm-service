@@ -1,0 +1,25 @@
+{{- if .Values.istio.authzPolicy.enabled }}
+# ── Zero Trust: 허용된 서비스 계정만 이 서비스에 접근 가능 ────────────
+# allowedPrincipals 가 비어있으면 모든 트래픽 차단 (deny-all 효과)
+# principal 형식: cluster.local/ns/<namespace>/sa/<serviceaccount>
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "courm-app.fullname" . }}-allow
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "courm-app.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "courm-app.selectorLabels" . | nindent 6 }}
+  {{- if .Values.istio.authzPolicy.allowedPrincipals }}
+  rules:
+    {{- range .Values.istio.authzPolicy.allowedPrincipals }}
+    - from:
+        - source:
+            principals:
+              - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}

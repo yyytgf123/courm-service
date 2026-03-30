@@ -1,0 +1,26 @@
+{{- if .Values.istio.sidecar.enabled }}
+# 단일 ns 구조: ./* 가 같은 ns 내 5개 서비스 전부 포함
+# 제거 대상: argocd, jenkins-agents, courm-kafka, kube-system, cert-manager 등 타 ns
+# → 툴링 ns xDS 제거로 Envoy 메모리/CPU 절감
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  workloadSelector:
+    labels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+  egress:
+    - hosts:
+      {{- range .Values.istio.sidecar.egressHosts }}
+        - {{ . | quote }}
+      {{- end }}
+  ingress:
+    - port:
+        number: {{ .Values.service.targetPort | default 8080 }}
+        protocol: HTTP
+      defaultEndpoint: 0.0.0.0:{{ .Values.service.targetPort | default 8080 }}
+{{- end }}

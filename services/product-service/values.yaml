@@ -63,15 +63,35 @@ resources:
 
 revisionHistoryLimit: 3
 
-## HPA (Auto-Scaling)
+## HPA — KEDA로 대체됨
 hpa:
+  enabled: false
+
+## KEDA ScaledObject
+## - CPU 60% / Memory 75%: 리소스 기반 확장
+## - Prometheus p95 > 500ms: order가 호출하는 선행 서비스 병목 선제 확장
+keda:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPU: 50
-  behavior:
-    scaleDown:
-      stabilizationWindowSeconds: 60
+  minReplicaCount: 2
+  maxReplicaCount: 3
+  pollingInterval: 15
+  cooldownPeriod: 300
+  triggers:
+    cpu:
+      enabled: true
+      threshold: "60"
+    memory:
+      enabled: true
+      threshold: "75"
+    prometheus:
+      enabled: true
+      serverAddress: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
+      metricName: http_request_p95_latency_product
+      query: >-
+        histogram_quantile(0.95,
+          sum(rate(http_server_requests_seconds_bucket{job="product-service"}[2m]))
+          by (le))
+      threshold: "0.5"
 
 ## Monitoring
 metrics:

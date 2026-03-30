@@ -1,0 +1,24 @@
+{{- if .Values.istio.authzPolicy.enabled }}
+# payment-service: order-service SA만 접근 허용 (zero trust)
+# Toss Payments 외부 API 호출은 egress gateway 또는 그대로 허용
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}-allow
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+  {{- if .Values.istio.authzPolicy.allowedPrincipals }}
+  rules:
+    {{- range .Values.istio.authzPolicy.allowedPrincipals }}
+    - from:
+        - source:
+            principals:
+              - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}

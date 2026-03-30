@@ -1,0 +1,24 @@
+{{- if .Values.istio.authzPolicy.enabled }}
+# order-service는 외부 클라이언트(Gateway 경유)만 접근하므로
+# authzPolicy.enabled: false 가 기본 (Gateway가 이미 JWT로 1차 검증)
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}-allow
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+  {{- if .Values.istio.authzPolicy.allowedPrincipals }}
+  rules:
+    {{- range .Values.istio.authzPolicy.allowedPrincipals }}
+    - from:
+        - source:
+            principals:
+              - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,49 @@
+{{- if .Values.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "courm-app.fullname" . }}-scaledobject
+  labels:
+    {{- include "courm-app.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    name: {{ include "courm-app.fullname" . }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount | default 1 }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 3 }}
+  pollingInterval: {{ .Values.keda.pollingInterval | default 15 }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 300 }}
+  triggers:
+{{- if and .Values.keda.triggers.cpu .Values.keda.triggers.cpu.enabled }}
+    - type: cpu
+      metricType: Utilization
+      metadata:
+        value: {{ .Values.keda.triggers.cpu.threshold | default "60" | quote }}
+{{- end }}
+{{- if and .Values.keda.triggers.memory .Values.keda.triggers.memory.enabled }}
+    - type: memory
+      metricType: Utilization
+      metadata:
+        value: {{ .Values.keda.triggers.memory.threshold | default "75" | quote }}
+{{- end }}
+{{- if and .Values.keda.triggers.kafka .Values.keda.triggers.kafka.enabled }}
+    - type: kafka
+      metadata:
+        bootstrapServers: {{ .Values.config.kafkaBootstrapServers }}
+        consumerGroup: {{ .Values.keda.triggers.kafka.consumerGroup }}
+        topic: {{ .Values.keda.triggers.kafka.topic }}
+        lagThreshold: {{ .Values.keda.triggers.kafka.lagThreshold | default "800" | quote }}
+        activationLagThreshold: {{ .Values.keda.triggers.kafka.activationLagThreshold | default "10" | quote }}
+        offsetResetPolicy: latest
+{{- end }}
+{{- if and .Values.keda.triggers.prometheus .Values.keda.triggers.prometheus.enabled }}
+    - type: prometheus
+      metadata:
+        serverAddress: {{ .Values.keda.triggers.prometheus.serverAddress }}
+        metricName: {{ .Values.keda.triggers.prometheus.metricName | default "http_p95_latency" }}
+        query: {{ .Values.keda.triggers.prometheus.query | quote }}
+        threshold: {{ .Values.keda.triggers.prometheus.threshold | default "0.5" | quote }}
+        namespace: {{ .Release.Namespace }}
+{{- end }}
+{{- end }}

@@ -96,25 +96,22 @@ javaToolOptions: >-
   -XX:MaxRAMPercentage=75.0
   -XX:+ExitOnOutOfMemoryError
 
+## HPA — KEDA로 대체됨
 hpa:
-  maxReplicas: 3
-  behavior:
-    scaleDown:
-      stabilizationWindowSeconds: 60
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 50
-    - type: External
-      external:
-        metric:
-          name: kafka_consumergroup_lag_sum
-          selector:
-            matchLabels:
-              consumergroup: order-service-group
-        target:
-          type: Value
-          value: "1000"
+  enabled: false
+
+## KEDA ScaledObject
+## - CPU 60% / Memory 75%: 리소스 기반 확장
+keda:
+  enabled: true
+  minReplicaCount: 2
+  maxReplicaCount: 4
+  pollingInterval: 15
+  cooldownPeriod: 300
+  triggers:
+    cpu:
+      enabled: true
+      threshold: "60"
+    memory:
+      enabled: true
+      threshold: "75"

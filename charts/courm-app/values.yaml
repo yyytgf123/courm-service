@@ -40,3 +40,14 @@ destinationRule:
     interval: 1m
     baseEjectionTime: 15m
     maxEjectionPercent: 100
+
+keda:
+  enabled: false
+  minReplicaCount: 1
+  maxReplicaCount: 3
+  pollingInterval: 15      # lag 체크 주기(초)
+  cooldownPeriod: 300      # scale-down 대기(초)
+  consumerGroup: ""
+  topic: ""
+  lagThreshold: "500"
+  activationLagThreshold: "10"

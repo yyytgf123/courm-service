@@ -10,26 +10,54 @@ spec:
   parentRefs:
     - name: {{ .Values.route.gatewayName }}
       namespace: {{ .Values.route.gatewayNamespace | default .Release.Namespace }}
+      {{- with .Values.route.sectionName }}
+      sectionName: {{ . | quote }}
+      {{- end }}
   {{- if .Values.route.hostnames }}
   hostnames:
-  {{- range .Values.route.hostnames }}
-  - {{ . | quote }}
-  {{- end }}
+    {{- range .Values.route.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
   {{- end }}
   rules:
+    {{- if .Values.strategy.blueGreen.previewHeader.enabled }}
+    # ── Preview: X-Preview: true → preview 서비스 ──────────────────
     - matches:
         - path:
             type: {{ .Values.route.pathType | default "PathPrefix" }}
             value: {{ .Values.route.path }}
-      {{- if .Values.route.headers }}
-      {{- range .Values.route.headers }}
-      - headers:
-          - name: {{ .name }}
-            value: {{ .value }}
-      {{- end }}
-      {{- end }}
+          headers:
+            - name: {{ .Values.strategy.blueGreen.previewHeader.name | default "X-Preview" | quote }}
+              value: {{ .Values.strategy.blueGreen.previewHeader.value | default "true" | quote }}
       backendRefs:
-        - name: {{ .Release.Name }}
+        - name: {{ .Release.Name }}-preview
+          port: {{ .Values.service.port }}
+      timeouts:
+        request: {{ default "10s" .Values.route.preview.timeouts.request | quote }}
+        backendRequest: {{ default "8s" .Values.route.preview.timeouts.backendRequest | quote }}
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            add:
+              - name: X-Served-By
+                value: preview
+    {{- end }}
+    # ── 기본 트래픽: active 서비스 ─────────────────────────────────
+    - matches:
+        - path:
+            type: {{ .Values.route.pathType | default "PathPrefix" }}
+            value: {{ .Values.route.path }}
+      backendRefs:
+        - name: {{ .Release.Name }}-active
           port: {{ .Values.service.port }}
           weight: {{ .Values.route.weight | default 1 }}
-  {{- end }}
+      timeouts:
+        request: {{ default "30s" .Values.route.timeouts.request | quote }}
+        backendRequest: {{ default "25s" .Values.route.timeouts.backendRequest | quote }}
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            add:
+              - name: X-Served-By
+                value: active
+{{- end }}

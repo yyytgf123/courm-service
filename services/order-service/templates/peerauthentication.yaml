@@ -1,0 +1,12 @@
+{{- if .Values.istio.peerAuth.enabled }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  mtls:
+    mode: {{ .Values.istio.peerAuth.mode | default "STRICT" }}
+{{- end }}

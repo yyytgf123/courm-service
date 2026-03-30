@@ -25,8 +25,7 @@ spec:
 
   rules:
     {{- if .Values.strategy.blueGreen.previewHeader.enabled }}
-    # [preview 라우팅] 지정한 헤더가 있는 요청은 신버전(preview)으로 전달
-    # 예: curl -H "X-Preview: true" https://...
+    # ── Preview: X-Preview: true 헤더 → 신버전(preview) 서비스 ───────
     - matches:
         - path:
             type: {{ default "PathPrefix" .Values.route.pathType }}
@@ -37,8 +36,18 @@ spec:
       backendRefs:
         - name: {{ include "courm-app.fullname" . }}-preview
           port: {{ default 80 .Values.service.port }}
+      timeouts:
+        request: {{ default "10s" .Values.route.preview.timeouts.request | quote }}
+        backendRequest: {{ default "8s" .Values.route.preview.timeouts.backendRequest | quote }}
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            add:
+              - name: X-Served-By
+                value: preview
     {{- end }}
-    # [일반 라우팅] 헤더 없는 일반 요청은 구버전(active)으로 전달
+
+    # ── 기본 트래픽: 구버전(active) 서비스 ─────────────────────────────
     - matches:
         - path:
             type: {{ default "PathPrefix" .Values.route.pathType }}
@@ -47,4 +56,13 @@ spec:
         - name: {{ include "courm-app.fullname" . }}-active
           port: {{ default 80 .Values.service.port }}
           weight: {{ default 1 .Values.route.weight }}
+      timeouts:
+        request: {{ default "30s" .Values.route.timeouts.request | quote }}
+        backendRequest: {{ default "25s" .Values.route.timeouts.backendRequest | quote }}
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            add:
+              - name: X-Served-By
+                value: active
 {{- end }}

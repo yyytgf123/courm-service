@@ -64,6 +64,66 @@ otel:
   sampler: "parentbased_traceidratio"
   samplerArg: "0.1"   # 운영은 보통 10% 같은 식으로 낮춤
 
+## Istio
+istio:
+  peerAuth:
+    enabled: true
+    mode: STRICT                    # 평문 차단, 서비스 간 mTLS 강제
+  requestAuth:
+    enabled: true
+    issuer: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_HmqfrWP3T"
+    jwksUri: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_HmqfrWP3T/.well-known/jwks.json"
+  authzPolicy:
+    enabled: true
+    allowedPrincipals:
+      # order-service SA만 user-service 접근 허용 (OpenFeign 호출 대상)
+      - "cluster.local/ns/order/sa/default"
+  sidecar:
+    enabled: true
+    # 단일 ns 구조: ./* 로 같은 ns 내 5개 서비스 모두 포함
+    # argocd/jenkins-agents/courm-kafka/kube-system/cert-manager 등 타 ns xDS 제거
+    egressHosts:
+      - "./*"              # 같은 ns (user/order/cart/payment/product 전부)
+      - "istio-system/*"   # Gateway, istiod
+      - "monitoring/*"     # Prometheus, Otel Collector
+
+## Route timeouts
+route:
+  timeouts:
+    request: "30s"
+    backendRequest: "25s"
+  preview:
+    timeouts:
+      request: "10s"
+      backendRequest: "8s"
+
+## DestinationRule (Circuit Breaker)
+destinationRule:
+  enabled: true
+  loadBalancer: ROUND_ROBIN
+  connectionPool:
+    tcp:
+      maxConnections: 100
+      connectTimeout: "5s"
+    http:
+      h2UpgradePolicy: DEFAULT
+      http1MaxPendingRequests: 100
+      http2MaxRequests: 200
+      maxRequestsPerConnection: 10
+      maxRetries: 3
+  preview:
+    connectionPool:
+      tcp:
+        maxConnections: 50
+      http:
+        http1MaxPendingRequests: 50
+        http2MaxRequests: 100
+  outlierDetection:
+    consecutive5xxErrors: 3
+    interval: "10s"
+    baseEjectionTime: "30s"
+    maxEjectionPercent: 50
+
 ## HPA (운영 Auto-Scaling)
 hpa:
   enabled: true
