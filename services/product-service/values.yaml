@@ -73,16 +73,10 @@ hpa:
 keda:
   enabled: true
   minReplicaCount: 2
-  maxReplicaCount: 3
+  maxReplicaCount: 5
   pollingInterval: 15
   cooldownPeriod: 300
   triggers:
-    cpu:
-      enabled: true
-      threshold: "60"
-    memory:
-      enabled: true
-      threshold: "75"
     prometheus:
       enabled: true
       serverAddress: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
@@ -91,7 +85,13 @@ keda:
         histogram_quantile(0.95,
           sum(rate(http_server_requests_seconds_bucket{job="product-service"}[2m]))
           by (le))
-      threshold: "0.5"
+      threshold: "0.2"
+    cpu:
+      enabled: true
+      threshold: "60"
+    memory:
+      enabled: true
+      threshold: "75"
 
 ## Monitoring
 metrics:

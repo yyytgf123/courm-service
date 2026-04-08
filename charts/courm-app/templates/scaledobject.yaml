@@ -7,26 +7,14 @@ metadata:
     {{- include "courm-app.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
-    apiVersion: argoproj.io/v1alpha1
-    kind: Rollout
+    apiVersion: apps/v1
+    kind: Deployment
     name: {{ include "courm-app.fullname" . }}
   minReplicaCount: {{ .Values.keda.minReplicaCount | default 1 }}
   maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 3 }}
   pollingInterval: {{ .Values.keda.pollingInterval | default 15 }}
   cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 300 }}
   triggers:
-{{- if and .Values.keda.triggers.cpu .Values.keda.triggers.cpu.enabled }}
-    - type: cpu
-      metricType: Utilization
-      metadata:
-        value: {{ .Values.keda.triggers.cpu.threshold | default "60" | quote }}
-{{- end }}
-{{- if and .Values.keda.triggers.memory .Values.keda.triggers.memory.enabled }}
-    - type: memory
-      metricType: Utilization
-      metadata:
-        value: {{ .Values.keda.triggers.memory.threshold | default "75" | quote }}
-{{- end }}
 {{- if and .Values.keda.triggers.kafka .Values.keda.triggers.kafka.enabled }}
     - type: kafka
       metadata:
@@ -45,5 +33,17 @@ spec:
         query: {{ .Values.keda.triggers.prometheus.query | quote }}
         threshold: {{ .Values.keda.triggers.prometheus.threshold | default "0.5" | quote }}
         namespace: {{ .Release.Namespace }}
+{{- end }}
+{{- if and .Values.keda.triggers.cpu .Values.keda.triggers.cpu.enabled }}
+    - type: cpu
+      metricType: Utilization
+      metadata:
+        value: {{ .Values.keda.triggers.cpu.threshold | default "60" | quote }}
+{{- end }}
+{{- if and .Values.keda.triggers.memory .Values.keda.triggers.memory.enabled }}
+    - type: memory
+      metricType: Utilization
+      metadata:
+        value: {{ .Values.keda.triggers.memory.threshold | default "75" | quote }}
 {{- end }}
 {{- end }}

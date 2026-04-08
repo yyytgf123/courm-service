@@ -66,7 +66,7 @@ hpa:
 keda:
   enabled: true
   minReplicaCount: 2
-  maxReplicaCount: 4
+  maxReplicaCount: 8
   pollingInterval: 15
   cooldownPeriod: 300
   triggers:

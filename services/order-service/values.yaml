@@ -105,10 +105,16 @@ hpa:
 keda:
   enabled: true
   minReplicaCount: 2
-  maxReplicaCount: 4
+  maxReplicaCount: 6
   pollingInterval: 15
   cooldownPeriod: 300
   triggers:
+    kafka:
+      enabled: true
+      consumerGroup: order-service-group
+      topic: order-events
+      lagThreshold: "800"
+      activationLagThreshold: "10"
     cpu:
       enabled: true
       threshold: "60"
